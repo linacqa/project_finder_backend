@@ -10,4 +10,7 @@ public class Invitation : BaseEntityUser<AppUser>
     
     public Guid ProjectId { get; set; }
     public Project? Project { get; set; }
+    
+    public Guid FromUserId { get; set; }
+    public AppUser? FromUser { get; set; }
 }
