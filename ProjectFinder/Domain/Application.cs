@@ -13,4 +13,7 @@ public class Application : BaseEntity
     
     public Guid ProjectId { get; set; }
     public Project? Project { get; set; }
+    
+    public DateTime AcceptedAt { get; set; }
+    public DateTime DeclinedAt { get; set; }
 }

@@ -12,4 +12,6 @@ public class Comment : BaseEntityUser<AppUser>
     public Comment? ReplyToComment { get; set; }
     
     public string Content { get; set; } = default!;
+    
+    public ICollection<Comment>? Replies { get; set; }
 }

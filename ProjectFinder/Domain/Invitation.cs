@@ -13,4 +13,7 @@ public class Invitation : BaseEntityUser<AppUser>
     
     public Guid FromUserId { get; set; }
     public AppUser? FromUser { get; set; }
+    
+    public DateTime AcceptedAt { get; set; }
+    public DateTime DeclinedAt { get; set; }
 }

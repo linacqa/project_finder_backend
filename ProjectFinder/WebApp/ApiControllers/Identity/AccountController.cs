@@ -99,6 +99,7 @@ public class AccountController : ControllerBase
             UserName = registrationData.Email,
             FirstName = registrationData.FirstName,
             LastName = registrationData.LastName,
+            AuthType = AuthType.Local,
             RefreshTokens = new List<AppRefreshToken>() { refreshToken }
         };
         refreshToken.User = appUser;

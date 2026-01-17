@@ -1,4 +1,5 @@
 using Base.Contracts;
+using Domain;
 using Domain.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -11,18 +12,16 @@ namespace DAL.EF;
 public class AppDbContext : IdentityDbContext<AppUser, AppRole, Guid, IdentityUserClaim<Guid>, AppUserRole, 
     IdentityUserLogin<Guid>, IdentityRoleClaim<Guid>, IdentityUserToken<Guid>>
 {
-    /*public DbSet<Attachment> Attachments { get; set; } = default!;
-    public DbSet<Category> Categories { get; set; } = default!;
-    public DbSet<CategoryStatus> CategoryStatuses { get; set; } = default!;
-    public DbSet<ContactType> ContactTypes { get; set; } = default!;
-    public DbSet<Contact> Contacts { get; set; } = default!;
-    public DbSet<CourseContact> CourseContacts { get; set; } = default!;
-    public DbSet<File> Files { get; set; } = default!;
-    public DbSet<Note> Notes { get; set; } = default!;
-    public DbSet<Status> Statuses { get; set; } = default!;
-    public DbSet<Task> Tasks { get; set; } = default!;
-    public DbSet<TaskStatus> TaskStatuses { get; set; } = default!;
-    public DbSet<TaskNote> TaskNotes { get; set; } = default!;*/
+    public DbSet<Application> Applications { get; set; } = default!;
+    public DbSet<Comment> Comments { get; set; } = default!;
+    public DbSet<Folder> Folders { get; set; } = default!;
+    public DbSet<Group> Groups { get; set; } = default!;
+    public DbSet<Invitation> Invitations { get; set; } = default!;
+    public DbSet<Notification> Notifications { get; set; } = default!;
+    public DbSet<Project> Projects { get; set; } = default!;
+    public DbSet<ProjectStep> ProjectSteps { get; set; } = default!;
+    public DbSet<Step> Steps { get; set; } = default!;
+    public DbSet<Tag> Tags { get; set; } = default!;
     
     public DbSet<AppRefreshToken> RefreshTokens { get; set; } = default!;
     
