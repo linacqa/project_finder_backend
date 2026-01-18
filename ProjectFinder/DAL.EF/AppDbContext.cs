@@ -88,6 +88,19 @@ public class AppDbContext : IdentityDbContext<AppUser, AppRole, Guid, IdentityUs
             .HasOne(a => a.Role)
             .WithMany(r => r.UserRoles)
             .HasForeignKey(a => a.RoleId);
+        
+        
+        builder.Entity<Invitation>()
+            .HasOne(i => i.FromUser)
+            .WithMany(u => u.OutgoingInvitations)
+            .HasForeignKey(i => i.FromUserId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        builder.Entity<Invitation>()
+            .HasOne(i => i.User)
+            .WithMany(u => u.IncomingInvitations)
+            .HasForeignKey(i => i.UserId)
+            .OnDelete(DeleteBehavior.Restrict);
 
     }
 

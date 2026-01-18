@@ -1,0 +1,15 @@
+﻿using Base.Contracts;
+using DAL.DTO.Identity;
+
+namespace DAL.DTO;
+
+public class UserProject : IDomainId
+{
+    public Guid Id { get; set; }
+    
+    public Guid UserId { get; set; }
+    public AppUser? User { get; set; }
+    
+    public Guid ProjectId { get; set; }
+    public Project? Project { get; set; }
+}

@@ -1,25 +1,19 @@
-using System.ComponentModel.DataAnnotations;
-using Base.Domain.Identity;
+﻿using Base.Contracts;
+using Domain.Identity;
 
-namespace Domain.Identity;
+namespace DAL.DTO.Identity;
 
-public class AppUser : BaseUser<AppUserRole>
+public class AppUser : IDomainId
 {
-    [MinLength(1)]
-    [MaxLength(128)]
+    public Guid Id { get; set; }
+    
     public string FirstName { get; set; } = default!;
- 
-    [MinLength(1)]
-    [MaxLength(128)]
+    
     public string LastName { get; set; } = default!;
     
-    [MaxLength(450)]
     public string? AzureObjectId { get; set; }
 
     public AuthType AuthType { get; set; }
-
-    
-    public ICollection<AppRefreshToken>? RefreshTokens { get; set; }
     
     public ICollection<UserProject>? UserProjects { get; set; }
     public ICollection<UserGroup>? UserGroups { get; set; }
