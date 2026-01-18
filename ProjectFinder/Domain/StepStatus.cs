@@ -1,6 +1,6 @@
 ﻿namespace Domain;
 
-public enum Status
+public enum StepStatus
 {
     NotStarted = 0,
     InProgress = 1,

@@ -7,7 +7,7 @@ public class Tag : BaseEntity
 {
     public string Name { get; set; } = default!;
     
-    public ICollection<Folder>? Folders { get; set; }
-    public  ICollection<Project>? Projects { get; set; }
-    public ICollection<AppUser>? Users { get; set; }
+    public ICollection<FolderTag>? FolderTags { get; set; }
+    public  ICollection<ProjectTag>? ProjectTags { get; set; }
+    public ICollection<UserTag>? UserTags { get; set; }
 }

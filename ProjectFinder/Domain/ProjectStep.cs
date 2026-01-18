@@ -10,5 +10,5 @@ public class ProjectStep : BaseEntity
     public Guid StepId { get; set; }
     public Step? Step { get; set; }
     
-    public Status Status { get; set; }
+    public StepStatus StepStatus { get; set; }
 }

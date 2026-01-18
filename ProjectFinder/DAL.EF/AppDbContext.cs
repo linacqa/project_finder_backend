@@ -15,13 +15,20 @@ public class AppDbContext : IdentityDbContext<AppUser, AppRole, Guid, IdentityUs
     public DbSet<Application> Applications { get; set; } = default!;
     public DbSet<Comment> Comments { get; set; } = default!;
     public DbSet<Folder> Folders { get; set; } = default!;
+    public DbSet<FolderTag> FolderTags { get; set; } = default!;
     public DbSet<Group> Groups { get; set; } = default!;
+    public DbSet<GroupProject> GroupProjects { get; set; } = default!;
     public DbSet<Invitation> Invitations { get; set; } = default!;
     public DbSet<Notification> Notifications { get; set; } = default!;
     public DbSet<Project> Projects { get; set; } = default!;
+    public DbSet<ProjectFolder> ProjectFolders { get; set; } = default!;
     public DbSet<ProjectStep> ProjectSteps { get; set; } = default!;
+    public DbSet<ProjectTag> ProjectTags { get; set; } = default!;
     public DbSet<Step> Steps { get; set; } = default!;
     public DbSet<Tag> Tags { get; set; } = default!;
+    public DbSet<UserGroup> UserGroups { get; set; } = default!;
+    public DbSet<UserProject> UserProjects { get; set; } = default!;
+    public DbSet<UserTag> UserTags { get; set; } = default!;
     
     public DbSet<AppRefreshToken> RefreshTokens { get; set; } = default!;
     
