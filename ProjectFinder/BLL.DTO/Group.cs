@@ -1,7 +1,7 @@
 ﻿using Base.Contracts;
-using DAL.DTO.Identity;
+using BLL.DTO.Identity;
 
-namespace DAL.DTO;
+namespace BLL.DTO;
 
 public class Group : IDomainId
 {
