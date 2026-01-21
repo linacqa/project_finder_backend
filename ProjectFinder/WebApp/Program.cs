@@ -2,6 +2,9 @@ using System.Text;
 using Asp.Versioning;
 using Asp.Versioning.ApiExplorer;
 using Base.Contracts;
+using BLL;
+using BLL.Contracts;
+using DAL.Contracts;
 using DAL.EF;
 using Domain.Identity;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -51,6 +54,9 @@ else
 // Add services to the container.
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
+
+builder.Services.AddScoped<IAppUOW, AppUOW>();
+builder.Services.AddScoped<IAppBLL, AppBLL>();
 
 builder.Services.AddIdentity<AppUser, AppRole>()
     .AddEntityFrameworkStores<AppDbContext>()
