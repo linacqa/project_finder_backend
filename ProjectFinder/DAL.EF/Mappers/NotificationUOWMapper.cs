@@ -13,7 +13,11 @@ public class NotificationUOWMapper : IMapper<DAL.DTO.Notification, Domain.Notifi
         {
             Id = entity.Id,
             FolderId = entity.FolderId,
-            Folder = entity.Folder != null ? new FolderUOWMapper().Map(entity.Folder) : null,
+            Folder = entity.Folder != null ? new Folder()
+            {
+                Id = entity.Folder.Id,
+                Name = entity.Folder.Name,
+            } : null,
             Message = entity.Message,
             PostedAt = entity.PostedAt,
         };
@@ -27,7 +31,11 @@ public class NotificationUOWMapper : IMapper<DAL.DTO.Notification, Domain.Notifi
         {
             Id = entity.Id,
             FolderId = entity.FolderId,
-            Folder = entity.Folder != null ? new FolderUOWMapper().Map(entity.Folder) : null,
+            Folder = entity.Folder != null ? new Domain.Folder()
+            {
+                Id = entity.Folder.Id,
+                Name = entity.Folder.Name,
+            } : null,
             Message = entity.Message,
             PostedAt = entity.PostedAt,
         };

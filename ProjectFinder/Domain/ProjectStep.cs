@@ -11,4 +11,5 @@ public class ProjectStep : BaseEntity
     public Step? Step { get; set; }
     
     public StepStatus StepStatus { get; set; }
+    public int Order { get; set; }
 }
