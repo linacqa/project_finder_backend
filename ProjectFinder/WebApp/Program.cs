@@ -170,7 +170,7 @@ app.UseHttpsRedirection();
 
 app.MapControllers();
 
-app.MapGet("/", () => "WebApi is running...");
+// app.MapGet("/", () => "WebApi is running...");
 
 app.Run();
 
