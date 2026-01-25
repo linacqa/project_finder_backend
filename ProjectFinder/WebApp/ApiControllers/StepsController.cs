@@ -3,6 +3,8 @@ using Base.Helpers;
 using BLL.Contracts;
 using Microsoft.AspNetCore.Mvc;
 using DTO.v1;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 
 namespace WebApp.ApiControllers
 {
@@ -55,98 +57,101 @@ namespace WebApp.ApiControllers
             return _mapper.Map(step)!;
         }
 
-        // /// <summary>
-        // /// Update the step by id (admin)
-        // /// </summary>
-        // /// <param name="id"></param>
-        // /// <param name="step"></param>
-        // /// <returns></returns>
-        // [Produces("application/json")]
-        // [Consumes("application/json")]
-        // [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        // [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        // [ProducesResponseType(StatusCodes.Status204NoContent)]
-        // [HttpPut("{id}")]
-        // public async Task<IActionResult> PutStep(Guid id, DTO.v1.Step step)
-        // {
-        //     if (id != step.Id)
-        //     {
-        //         return BadRequest();
-        //     }
-        //
-        //     try
-        //     {
-        //         await _bll.StepService.UpdateAsync(_mapper.Map(step)!, User.GetUserId());
-        //         await _bll.SaveChangesAsync();
-        //     }
-        //     catch (UnauthorizedAccessException e)
-        //     {
-        //         return Unauthorized(e.Message);
-        //     }
-        //
-        //     return NoContent();
-        // }
+        /// <summary>
+        /// Update the step by id (admin)
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="step"></param>
+        /// <returns></returns>
+        [Authorize(Roles = "admin", AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [Produces("application/json")]
+        [Consumes("application/json")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutStep(Guid id, DTO.v1.Step step)
+        {
+            if (id != step.Id)
+            {
+                return BadRequest();
+            }
+        
+            try
+            {
+                await _bll.StepService.UpdateAsync(_mapper.Map(step)!, User.GetUserId());
+                await _bll.SaveChangesAsync();
+            }
+            catch (UnauthorizedAccessException e)
+            {
+                return Unauthorized(e.Message);
+            }
+        
+            return NoContent();
+        }
 
-        // /// <summary>
-        // /// Add a new step (admin)
-        // /// </summary>
-        // /// <param name="step"></param>
-        // /// <returns></returns>
-        // [Consumes("application/json")]
-        // [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        // [ProducesResponseType(StatusCodes.Status201Created)]
-        // [ProducesResponseType(typeof(DTO.v1.Step), StatusCodes.Status200OK)]
-        // [HttpPost]
-        // public async Task<ActionResult<DTO.v1.Step>> PostStep(StepCreate step)
-        // {
-        //     var bllStep = _mapper.Map(step);
-        //
-        //     try
-        //     {
-        //         _bll.StepService.Add(bllStep, User.GetUserId());
-        //         await _bll.SaveChangesAsync();
-        //     } catch (UnauthorizedAccessException e)
-        //     {
-        //         return Unauthorized(e.Message);
-        //     }
-        //     
-        //     return CreatedAtAction("GetStep", new
-        //     {
-        //         id = bllStep.Id,
-        //         version = HttpContext.GetRequestedApiVersion()!.ToString()
-        //     }, _mapper.Map(bllStep)!);
-        // }
-        //
-        // /// <summary>
-        // /// Delete the step by id (admin)
-        // /// </summary>
-        // /// <param name="id"></param>
-        // /// <returns></returns>
-        // [Produces("application/json")]
-        // [Consumes("application/json")]
-        // [ProducesResponseType(StatusCodes.Status200OK)]
-        // [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        // [ProducesResponseType(StatusCodes.Status404NotFound)]
-        // [HttpDelete("{id}")]
-        // public async Task<IActionResult> DeleteStep(Guid id)
-        // {
-        //     var step = await _bll.StepService.FindAsync(id);
-        //     if (step == null)
-        //     {
-        //         return NotFound();
-        //     }
-        //
-        //     try
-        //     {
-        //         _bll.StepService.Remove(step, User.GetUserId());
-        //         await _bll.SaveChangesAsync();
-        //     }
-        //     catch (UnauthorizedAccessException e)
-        //     {
-        //         return Unauthorized(e.Message);
-        //     }
-        //
-        //     return NoContent();
-        // }
+        /// <summary>
+        /// Add a new step (admin)
+        /// </summary>
+        /// <param name="step"></param>
+        /// <returns></returns>
+        [Authorize(Roles = "admin", AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [Consumes("application/json")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(DTO.v1.Step), StatusCodes.Status200OK)]
+        [HttpPost]
+        public async Task<ActionResult<DTO.v1.Step>> PostStep(StepCreate step)
+        {
+            var bllStep = _mapper.Map(step);
+        
+            try
+            {
+                _bll.StepService.Add(bllStep, User.GetUserId());
+                await _bll.SaveChangesAsync();
+            } catch (UnauthorizedAccessException e)
+            {
+                return Unauthorized(e.Message);
+            }
+            
+            return CreatedAtAction("GetStep", new
+            {
+                id = bllStep.Id,
+                version = HttpContext.GetRequestedApiVersion()!.ToString()
+            }, _mapper.Map(bllStep)!);
+        }
+        
+        /// <summary>
+        /// Delete the step by id (admin)
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [Authorize(Roles = "admin", AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [Produces("application/json")]
+        [Consumes("application/json")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteStep(Guid id)
+        {
+            var step = await _bll.StepService.FindAsync(id);
+            if (step == null)
+            {
+                return NotFound();
+            }
+        
+            try
+            {
+                _bll.StepService.Remove(step, User.GetUserId());
+                await _bll.SaveChangesAsync();
+            }
+            catch (UnauthorizedAccessException e)
+            {
+                return Unauthorized(e.Message);
+            }
+        
+            return NoContent();
+        }
     }
 }

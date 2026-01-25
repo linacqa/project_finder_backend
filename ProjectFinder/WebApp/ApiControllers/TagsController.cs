@@ -3,6 +3,8 @@ using Base.Helpers;
 using BLL.Contracts;
 using Microsoft.AspNetCore.Mvc;
 using DTO.v1;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 
 namespace WebApp.ApiControllers
 {
@@ -55,98 +57,101 @@ namespace WebApp.ApiControllers
             return _mapper.Map(tag)!;
         }
 
-        // /// <summary>
-        // /// Update the tag by id (admin)
-        // /// </summary>
-        // /// <param name="id"></param>
-        // /// <param name="tag"></param>
-        // /// <returns></returns>
-        // [Produces("application/json")]
-        // [Consumes("application/json")]
-        // [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        // [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        // [ProducesResponseType(StatusCodes.Status204NoContent)]
-        // [HttpPut("{id}")]
-        // public async Task<IActionResult> PutTag(Guid id, DTO.v1.Tag tag)
-        // {
-        //     if (id != tag.Id)
-        //     {
-        //         return BadRequest();
-        //     }
-        //
-        //     try
-        //     {
-        //         await _bll.TagService.UpdateAsync(_mapper.Map(tag)!, User.GetUserId());
-        //         await _bll.SaveChangesAsync();
-        //     }
-        //     catch (UnauthorizedAccessException e)
-        //     {
-        //         return Unauthorized(e.Message);
-        //     }
-        //
-        //     return NoContent();
-        // }
+        /// <summary>
+        /// Update the tag by id (admin)
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="tag"></param>
+        /// <returns></returns>
+        [Authorize(Roles = "admin", AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [Produces("application/json")]
+        [Consumes("application/json")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutTag(Guid id, DTO.v1.Tag tag)
+        {
+            if (id != tag.Id)
+            {
+                return BadRequest();
+            }
+        
+            try
+            {
+                await _bll.TagService.UpdateAsync(_mapper.Map(tag)!, User.GetUserId());
+                await _bll.SaveChangesAsync();
+            }
+            catch (UnauthorizedAccessException e)
+            {
+                return Unauthorized(e.Message);
+            }
+        
+            return NoContent();
+        }
 
-        // /// <summary>
-        // /// Add a new tag (admin)
-        // /// </summary>
-        // /// <param name="tag"></param>
-        // /// <returns></returns>
-        // [Consumes("application/json")]
-        // [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        // [ProducesResponseType(StatusCodes.Status201Created)]
-        // [ProducesResponseType(typeof(DTO.v1.Tag), StatusCodes.Status200OK)]
-        // [HttpPost]
-        // public async Task<ActionResult<DTO.v1.Tag>> PostTag(TagCreate tag)
-        // {
-        //     var bllTag = _mapper.Map(tag);
-        //
-        //     try
-        //     {
-        //         _bll.TagService.Add(bllTag, User.GetUserId());
-        //         await _bll.SaveChangesAsync();
-        //     } catch (UnauthorizedAccessException e)
-        //     {
-        //         return Unauthorized(e.Message);
-        //     }
-        //     
-        //     return CreatedAtAction("GetTag", new
-        //     {
-        //         id = bllTag.Id,
-        //         version = HttpContext.GetRequestedApiVersion()!.ToString()
-        //     }, _mapper.Map(bllTag)!);
-        // }
-        //
-        // /// <summary>
-        // /// Delete the tag by id (admin)
-        // /// </summary>
-        // /// <param name="id"></param>
-        // /// <returns></returns>
-        // [Produces("application/json")]
-        // [Consumes("application/json")]
-        // [ProducesResponseType(StatusCodes.Status200OK)]
-        // [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        // [ProducesResponseType(StatusCodes.Status404NotFound)]
-        // [HttpDelete("{id}")]
-        // public async Task<IActionResult> DeleteTag(Guid id)
-        // {
-        //     var tag = await _bll.TagService.FindAsync(id);
-        //     if (tag == null)
-        //     {
-        //         return NotFound();
-        //     }
-        //
-        //     try
-        //     {
-        //         _bll.TagService.Remove(tag, User.GetUserId());
-        //         await _bll.SaveChangesAsync();
-        //     }
-        //     catch (UnauthorizedAccessException e)
-        //     {
-        //         return Unauthorized(e.Message);
-        //     }
-        //
-        //     return NoContent();
-        // }
+        /// <summary>
+        /// Add a new tag (admin)
+        /// </summary>
+        /// <param name="tag"></param>
+        /// <returns></returns>
+        [Authorize(Roles = "admin", AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [Consumes("application/json")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(DTO.v1.Tag), StatusCodes.Status200OK)]
+        [HttpPost]
+        public async Task<ActionResult<DTO.v1.Tag>> PostTag(TagCreate tag)
+        {
+            var bllTag = _mapper.Map(tag);
+        
+            try
+            {
+                _bll.TagService.Add(bllTag, User.GetUserId());
+                await _bll.SaveChangesAsync();
+            } catch (UnauthorizedAccessException e)
+            {
+                return Unauthorized(e.Message);
+            }
+            
+            return CreatedAtAction("GetTag", new
+            {
+                id = bllTag.Id,
+                version = HttpContext.GetRequestedApiVersion()!.ToString()
+            }, _mapper.Map(bllTag)!);
+        }
+        
+        /// <summary>
+        /// Delete the tag by id (admin)
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [Authorize(Roles = "admin", AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [Produces("application/json")]
+        [Consumes("application/json")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteTag(Guid id)
+        {
+            var tag = await _bll.TagService.FindAsync(id);
+            if (tag == null)
+            {
+                return NotFound();
+            }
+        
+            try
+            {
+                _bll.TagService.Remove(tag, User.GetUserId());
+                await _bll.SaveChangesAsync();
+            }
+            catch (UnauthorizedAccessException e)
+            {
+                return Unauthorized(e.Message);
+            }
+        
+            return NoContent();
+        }
     }
 }
