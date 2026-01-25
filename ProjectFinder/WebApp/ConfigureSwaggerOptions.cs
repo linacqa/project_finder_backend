@@ -40,34 +40,20 @@ public class ConfigureSwaggerOptions : IConfigureOptions<SwaggerGenOptions>
         var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
         options.IncludeXmlComments(xmlPath);
 
-        options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
+        options.AddSecurityDefinition("bearer", new OpenApiSecurityScheme()
         {
             Description =
-                "foo bar",
+                "Enter 'Bearer {jwt}'",
             Name = "Authorization",
             In = ParameterLocation.Header,
             Type = SecuritySchemeType.ApiKey,
-            Scheme = "Bearer"
+            Scheme = "bearer",
+            BearerFormat = "JWT"
         });
-
-        options.AddSecurityRequirement(doc => new OpenApiSecurityRequirement()
+        
+        options.AddSecurityRequirement((document) => new OpenApiSecurityRequirement()
         {
-            {
-                new OpenApiSecuritySchemeReference(
-                    "Bearer"
-                ),
-                /*{
-                    Reference = new OpenApiReference()
-                    {
-                        Type = ReferenceType.SecurityScheme,
-                        Id = "Bearer"
-                    },
-                    /*Scheme = "oauth2",
-                    Name = "Bearer",#1#
-                    In = ParameterLocation.Header
-                },*/
-                new List<string>()
-            }
+            [new OpenApiSecuritySchemeReference("bearer", document)] = []
         });
     }
 }

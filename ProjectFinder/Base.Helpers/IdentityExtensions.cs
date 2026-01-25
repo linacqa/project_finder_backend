@@ -15,6 +15,12 @@ public static class IdentityExtensions
         return userId;
     }
 
+    public static List<string> GetUserRoles(this ClaimsPrincipal claimsPrincipal)
+    {
+        var roles = claimsPrincipal.Claims.Where(c => c.Type == ClaimTypes.Role).Select(c => c.Value).ToList();
+        return roles;
+    }
+
     public static string GenerateJwt(
         IEnumerable<Claim> claims, 
         string key, 
@@ -47,7 +53,9 @@ public static class IdentityExtensions
             ValidAudience = audience,
             ValidateAudience = true,
             
-            ValidateLifetime = false
+            ValidateLifetime = false,
+            
+            ValidAlgorithms = [SecurityAlgorithms.HmacSha512]
         };
         try
         {

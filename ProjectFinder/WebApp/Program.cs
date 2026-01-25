@@ -6,6 +6,7 @@ using BLL;
 using BLL.Contracts;
 using DAL.Contracts;
 using DAL.EF;
+using DAL.EF.DataSeeding;
 using Domain.Identity;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -131,7 +132,7 @@ var app = builder.Build();
 // ========================================================================
 
 // Migrate db, seed initial data...
-// SetupAppData(app, app.Environment, app.Configuration);
+SetupAppData(app, app.Environment, app.Configuration);
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -164,8 +165,6 @@ app.UseSwaggerUI(options =>
     }
 );
 
-// app.UseAuthorization();
-
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -180,7 +179,11 @@ app.MapControllers();
 
 app.Run();
 
-/*static void SetupAppData(IApplicationBuilder app, IWebHostEnvironment env, IConfiguration configuration)
+// ======================================================================================================
+return;
+// ======================================================================================================
+
+static void SetupAppData(IApplicationBuilder app, IWebHostEnvironment env, IConfiguration configuration)
 {
     using var serviceScope = ((IApplicationBuilder)app).ApplicationServices
         .GetRequiredService<IServiceScopeFactory>()
@@ -252,7 +255,7 @@ static void WaitDbConnection(AppDbContext ctx, ILogger<IApplicationBuilder> logg
             System.Threading.Thread.Sleep(1000);
         }
     }
-}*/
+}
 
 
 // ======================================================================================================
