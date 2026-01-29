@@ -34,7 +34,7 @@ public class GroupMapper : IMapper<DTO.v1.Group, BLL.DTO.Group>
         return result;
     }
 
-    public BLL.DTO.Group Map(GroupCreate entity)
+    public BLL.DTO.Group Map(GroupCreateUpdate entity)
     {
         var result = new BLL.DTO.Group()
         {

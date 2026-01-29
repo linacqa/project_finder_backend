@@ -1,6 +1,6 @@
 ﻿namespace DTO.v1;
 
-public class GroupCreate
+public class GroupCreateUpdate
 {
     public string Name { get; set; } = default!;
 }

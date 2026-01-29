@@ -55,37 +55,39 @@ namespace WebApp.ApiControllers
             return _mapper.Map(group)!;
         }
 
-        // /// <summary>
-        // /// Update the group by id (admin)
-        // /// </summary>
-        // /// <param name="id"></param>
-        // /// <param name="group"></param>
-        // /// <returns></returns>
-        // [Produces("application/json")]
-        // [Consumes("application/json")]
-        // [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        /// <summary>
+        /// Update the group by id (admin)
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="group"></param>
+        /// <returns></returns>
+        [Produces("application/json")]
+        [Consumes("application/json")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         // [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        // [ProducesResponseType(StatusCodes.Status204NoContent)]
-        // [HttpPut("{id}")]
-        // public async Task<IActionResult> PutGroup(Guid id, DTO.v1.Group group)
-        // {
-        //     if (id != group.Id)
-        //     {
-        //         return BadRequest();
-        //     }
-        //
-        //     try
-        //     {
-        //         await _bll.GroupService.UpdateAsync(_mapper.Map(group)!, User.GetUserId());
-        //         await _bll.SaveChangesAsync();
-        //     }
-        //     catch (UnauthorizedAccessException e)
-        //     {
-        //         return Unauthorized(e.Message);
-        //     }
-        //
-        //     return NoContent();
-        // }
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutGroup(Guid id, GroupCreateUpdate group)
+        {
+            // if (id != group.Id)
+            // {
+            //     return BadRequest();
+            // }
+        
+            try
+            {
+                var groupWithId = _mapper.Map(group);
+                groupWithId.Id = id;
+                await _bll.GroupService.UpdateAsync(groupWithId, User.GetUserId());
+                await _bll.SaveChangesAsync();
+            }
+            catch (UnauthorizedAccessException e)
+            {
+                return Unauthorized(e.Message);
+            }
+        
+            return NoContent();
+        }
 
         /// <summary>
         /// Add a new group
@@ -97,7 +99,7 @@ namespace WebApp.ApiControllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(DTO.v1.Group), StatusCodes.Status200OK)]
         [HttpPost]
-        public async Task<ActionResult<DTO.v1.Group>> PostGroup(GroupCreate group)
+        public async Task<ActionResult<DTO.v1.Group>> PostGroup(GroupCreateUpdate group)
         {
             var bllGroup = _mapper.Map(group);
         

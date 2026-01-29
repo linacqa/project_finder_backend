@@ -23,7 +23,6 @@ public class ProjectBLLMapper : IMapper<BLL.DTO.Project, DAL.DTO.Project>
             ProjectStatus = entity.ProjectStatus,
             Deadline = entity.Deadline,
             AttachmentsPaths = entity.AttachmentsPaths,
-            CreatorId = entity.CreatorId,
         };
         
         return result;
@@ -47,7 +46,6 @@ public class ProjectBLLMapper : IMapper<BLL.DTO.Project, DAL.DTO.Project>
             ProjectStatus = entity.ProjectStatus,
             Deadline = entity.Deadline,
             AttachmentsPaths = entity.AttachmentsPaths,
-            CreatorId = entity.CreatorId,
         };
         
         return result;

@@ -3,6 +3,8 @@ using Base.Helpers;
 using BLL.Contracts;
 using Microsoft.AspNetCore.Mvc;
 using DTO.v1;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 
 namespace WebApp.ApiControllers
 {
@@ -56,11 +58,12 @@ namespace WebApp.ApiControllers
         }
 
         /// <summary>
-        /// Update the project by id - owned by current user
+        /// Update the project by id (admin)
         /// </summary>
         /// <param name="id"></param>
         /// <param name="project"></param>
         /// <returns></returns>
+        [Authorize(Roles = "admin", AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [Produces("application/json")]
         [Consumes("application/json")]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -76,7 +79,7 @@ namespace WebApp.ApiControllers
 
             try
             {
-                await _bll.ProjectService.UpdateAsync(_mapper.Map(project)!, User.GetUserId());
+                await _bll.ProjectService.UpdateAsync(_mapper.Map(project)!);
                 await _bll.SaveChangesAsync();
             }
             catch (UnauthorizedAccessException e)
@@ -88,10 +91,11 @@ namespace WebApp.ApiControllers
         }
 
         /// <summary>
-        /// Add a new project
+        /// Add a new project (admin)
         /// </summary>
         /// <param name="project"></param>
         /// <returns></returns>
+        [Authorize(Roles = "admin", AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [Consumes("application/json")]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status201Created)]
@@ -103,7 +107,7 @@ namespace WebApp.ApiControllers
 
             try
             {
-                _bll.ProjectService.Add(bllProject, User.GetUserId());
+                _bll.ProjectService.Add(bllProject);
                 await _bll.SaveChangesAsync();
             } catch (UnauthorizedAccessException e)
             {
@@ -118,10 +122,11 @@ namespace WebApp.ApiControllers
         }
 
         /// <summary>
-        /// Delete the project by id - owned by current user
+        /// Delete the project by id (admin)
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
+        [Authorize(Roles = "admin", AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [Produces("application/json")]
         [Consumes("application/json")]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -138,7 +143,7 @@ namespace WebApp.ApiControllers
 
             try
             {
-                _bll.ProjectService.Remove(project, User.GetUserId());
+                _bll.ProjectService.Remove(project);
                 await _bll.SaveChangesAsync();
             }
             catch (UnauthorizedAccessException e)

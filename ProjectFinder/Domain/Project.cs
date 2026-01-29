@@ -1,9 +1,8 @@
 using Base.Domain;
-using Domain.Identity;
 
 namespace Domain;
 
-public class Project : BaseEntityUser<AppUser>
+public class Project : BaseEntity
 {
     public string TitleInEstonian { get; set; } = default!;
     public string? TitleInEnglish { get; set; } = default!;

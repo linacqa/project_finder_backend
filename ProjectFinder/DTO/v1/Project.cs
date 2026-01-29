@@ -17,6 +17,4 @@ public class Project : IDomainId
     public ProjectStatus ProjectStatus { get; set; }
     public DateTime? Deadline { get; set; }
     public List<string> AttachmentsPaths { get; set; } = [];
-    
-    public Guid CreatorId { get; set; }
 }
