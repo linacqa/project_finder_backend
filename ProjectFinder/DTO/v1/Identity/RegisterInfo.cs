@@ -14,9 +14,13 @@ public class RegisterInfo
     
     [MinLength(1)]
     [MaxLength(128)]
-    public string FirstName { get; set; }= default!;
+    public string FirstName { get; set; } = default!;
         
     [MinLength(1)]
     [MaxLength(128)]
-    public string LastName { get; set; }= default!;
+    public string LastName { get; set; } = default!;
+    
+    [MinLength(1)]
+    [MaxLength(64)]
+    public string Role { get; set; } = "user";
 }

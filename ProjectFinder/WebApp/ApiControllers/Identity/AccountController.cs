@@ -118,7 +118,20 @@ public class AccountController : ControllerBase
             );
         }
 
-        result = await _userManager.AddToRoleAsync(appUser, "user");
+        var availableRoles = new List<string>() { "user", "student", "supervisor" };
+        
+        if (!availableRoles.Contains(registrationData.Role.ToLower()))
+        {
+            return BadRequest(
+                new RestApiErrorResponse()
+                {
+                    Status = HttpStatusCode.BadRequest,
+                    Error = $"Role {registrationData.Role} is unavailable"
+                }
+            );
+        }
+        
+        result = await _userManager.AddToRoleAsync(appUser, registrationData.Role);
         if (!result.Succeeded)
         {
             return BadRequest(
