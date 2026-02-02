@@ -23,4 +23,8 @@ public class RegisterInfo
     [MinLength(1)]
     [MaxLength(64)]
     public string Role { get; set; } = "user";
+
+    public string? UniId { get; set; }
+    
+    public string? MatriculationNumber { get; set; }
 }

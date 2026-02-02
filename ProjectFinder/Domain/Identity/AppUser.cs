@@ -13,6 +13,12 @@ public class AppUser : BaseUser<AppUserRole>
     [MaxLength(128)]
     public string LastName { get; set; } = default!;
     
+    [MaxLength(15)]
+    public string? UniId { get; set; }
+    
+    [MaxLength(15)]
+    public string? MatriculationNumber { get; set; }
+    
     [MaxLength(450)]
     public string? AzureObjectId { get; set; }
 

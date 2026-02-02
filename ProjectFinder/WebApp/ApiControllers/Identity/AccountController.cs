@@ -87,6 +87,19 @@ public class AccountController : ControllerBase
                 }
             );
         }
+        
+        var availableRoles = new List<string>() { "user", "student", "teacher" };
+        
+        if (!availableRoles.Contains(registrationData.Role.ToLower()))
+        {
+            return BadRequest(
+                new RestApiErrorResponse()
+                {
+                    Status = HttpStatusCode.BadRequest,
+                    Error = $"Role {registrationData.Role} is unavailable"
+                }
+            );
+        }
 
         // register user
         var refreshToken = new AppRefreshToken()
@@ -100,6 +113,8 @@ public class AccountController : ControllerBase
             UserName = registrationData.Email,
             FirstName = registrationData.FirstName,
             LastName = registrationData.LastName,
+            UniId = registrationData.UniId,
+            MatriculationNumber = registrationData.MatriculationNumber,
             AuthType = AuthType.Local,
             RefreshTokens = new List<AppRefreshToken>() { refreshToken }
         };
@@ -114,19 +129,6 @@ public class AccountController : ControllerBase
                 {
                     Status = HttpStatusCode.BadRequest,
                     Error = result.Errors.First().Description
-                }
-            );
-        }
-
-        var availableRoles = new List<string>() { "user", "student", "supervisor" };
-        
-        if (!availableRoles.Contains(registrationData.Role.ToLower()))
-        {
-            return BadRequest(
-                new RestApiErrorResponse()
-                {
-                    Status = HttpStatusCode.BadRequest,
-                    Error = $"Role {registrationData.Role} is unavailable"
                 }
             );
         }
@@ -499,7 +501,7 @@ public class AccountController : ControllerBase
             );
         }
 
-        if (Guid.TryParse(userIdStr, out var userId))
+        if (!Guid.TryParse(userIdStr, out var userId))
         {
             return BadRequest("Deserialization error");
         }
@@ -535,6 +537,64 @@ public class AccountController : ControllerBase
         var deleteCount = await _context.SaveChangesAsync();
 
         return Ok(new { TokenDeleteCount = deleteCount });
+    }
+    
+    /// <summary>
+    /// Get current user info
+    /// </summary>
+    /// <returns>Current user info</returns>
+    [Produces("application/json")]
+    [ProducesResponseType(typeof(DTO.v1.Identity.CurrentUserInfo), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [HttpGet]
+    public async Task<ActionResult<DTO.v1.Identity.CurrentUserInfo>> CurrentUserInfo()
+    {
+        var userIdStr = _userManager.GetUserId(User);
+        if (userIdStr == null)
+        {
+            return BadRequest(
+                new RestApiErrorResponse()
+                {
+                    Status = HttpStatusCode.BadRequest,
+                    Error = "Invalid user"
+                }
+            );
+        }
+        
+        Console.WriteLine(userIdStr);
+
+        if (!Guid.TryParse(userIdStr, out var userId))
+        {
+            return BadRequest("Deserialization error");
+        }
+
+        var appUser = await _context.Users
+            .Where(u => u.Id == userId)
+            .SingleOrDefaultAsync();
+        if (appUser == null)
+        {
+            return NotFound(
+                new RestApiErrorResponse()
+                {
+                    Status = HttpStatusCode.NotFound,
+                    Error = "User not found"
+                }
+            );
+        }
+
+        var userInfo = new DTO.v1.Identity.CurrentUserInfo()
+        {
+            Id = appUser.Id,
+            Email = appUser.Email!,
+            FirstName = appUser.FirstName,
+            LastName = appUser.LastName,
+            Role = (await _userManager.GetRolesAsync(appUser)).FirstOrDefault() ?? "user",
+            UniId = appUser.UniId,
+            MatriculationNumber = appUser.MatriculationNumber
+        };
+
+        return Ok(userInfo);
     }
 
     private DateTime GetExpirationDateTime(int? expiresInSeconds, string settingsKey)
