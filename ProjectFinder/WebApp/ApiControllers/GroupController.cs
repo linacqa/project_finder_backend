@@ -55,39 +55,39 @@ namespace WebApp.ApiControllers
             return _mapper.Map(group)!;
         }
 
-        /// <summary>
-        /// Update the group by id (admin)
-        /// </summary>
-        /// <param name="id"></param>
-        /// <param name="group"></param>
-        /// <returns></returns>
-        [Produces("application/json")]
-        [Consumes("application/json")]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        // [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutGroup(Guid id, GroupCreateUpdate group)
-        {
-            // if (id != group.Id)
-            // {
-            //     return BadRequest();
-            // }
-        
-            try
-            {
-                var groupWithId = _mapper.Map(group);
-                groupWithId.Id = id;
-                await _bll.GroupService.UpdateAsync(groupWithId, User.GetUserId());
-                await _bll.SaveChangesAsync();
-            }
-            catch (UnauthorizedAccessException e)
-            {
-                return Unauthorized(e.Message);
-            }
-        
-            return NoContent();
-        }
+        // /// <summary>
+        // /// Update the group by id (admin)
+        // /// </summary>
+        // /// <param name="id"></param>
+        // /// <param name="group"></param>
+        // /// <returns></returns>
+        // [Produces("application/json")]
+        // [Consumes("application/json")]
+        // [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        // // [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        // [ProducesResponseType(StatusCodes.Status204NoContent)]
+        // [HttpPut("{id}")]
+        // public async Task<IActionResult> PutGroup(Guid id, GroupCreateUpdate group)
+        // {
+        //     // if (id != group.Id)
+        //     // {
+        //     //     return BadRequest();
+        //     // }
+        //
+        //     try
+        //     {
+        //         var groupWithId = _mapper.Map(group);
+        //         groupWithId.Id = id;
+        //         await _bll.GroupService.UpdateAsync(groupWithId, User.GetUserId());
+        //         await _bll.SaveChangesAsync();
+        //     }
+        //     catch (UnauthorizedAccessException e)
+        //     {
+        //         return Unauthorized(e.Message);
+        //     }
+        //
+        //     return NoContent();
+        // }
 
         /// <summary>
         /// Add a new group

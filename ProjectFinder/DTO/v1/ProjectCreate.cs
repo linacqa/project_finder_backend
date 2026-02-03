@@ -14,6 +14,9 @@ public class ProjectCreate
     public Guid ProjectTypeId { get; set; }
     public Guid ProjectStatusId { get; set; }
     public DateTime? Deadline { get; set; }
+    public List<Guid> FolderIds { get; set; } = new ();
+    public List<Guid> TagIds { get; set; } = new ();
+    public List<Guid> StepIds { get; set; } = new ();
     // public List<string> AttachmentsPaths { get; set; } = [];
     
     // public Guid CreatorId { get; set; }

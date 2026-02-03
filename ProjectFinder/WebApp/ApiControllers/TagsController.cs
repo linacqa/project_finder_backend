@@ -79,7 +79,7 @@ namespace WebApp.ApiControllers
         
             try
             {
-                await _bll.TagService.UpdateAsync(_mapper.Map(tag)!, User.GetUserId());
+                await _bll.TagService.UpdateAsync(_mapper.Map(tag)!);
                 await _bll.SaveChangesAsync();
             }
             catch (UnauthorizedAccessException e)
@@ -107,7 +107,7 @@ namespace WebApp.ApiControllers
         
             try
             {
-                _bll.TagService.Add(bllTag, User.GetUserId());
+                _bll.TagService.Add(bllTag);
                 await _bll.SaveChangesAsync();
             } catch (UnauthorizedAccessException e)
             {
@@ -143,7 +143,7 @@ namespace WebApp.ApiControllers
         
             try
             {
-                _bll.TagService.Remove(tag, User.GetUserId());
+                _bll.TagService.Remove(tag);
                 await _bll.SaveChangesAsync();
             }
             catch (UnauthorizedAccessException e)

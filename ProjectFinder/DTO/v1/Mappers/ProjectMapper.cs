@@ -66,6 +66,9 @@ public class ProjectMapper : IMapper<DTO.v1.Project, BLL.DTO.Project>
             ProjectStatusId = entity.ProjectStatusId,
             Deadline = entity.Deadline,
             AttachmentsPaths = new List<string>(),
+            FolderIds = entity.FolderIds,
+            TagIds = entity.TagIds,
+            StepIds = entity.StepIds,
         };
         
         return result;

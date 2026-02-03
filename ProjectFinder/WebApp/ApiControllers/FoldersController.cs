@@ -79,7 +79,7 @@ namespace WebApp.ApiControllers
         
             try
             {
-                await _bll.FolderService.UpdateAsync(_mapper.Map(folder)!, User.GetUserId());
+                await _bll.FolderService.UpdateAsync(_mapper.Map(folder)!);
                 await _bll.SaveChangesAsync();
             }
             catch (UnauthorizedAccessException e)
@@ -107,7 +107,7 @@ namespace WebApp.ApiControllers
         
             try
             {
-                _bll.FolderService.Add(bllFolder, User.GetUserId());
+                _bll.FolderService.Add(bllFolder);
                 await _bll.SaveChangesAsync();
             } catch (UnauthorizedAccessException e)
             {
@@ -143,7 +143,7 @@ namespace WebApp.ApiControllers
         
             try
             {
-                _bll.FolderService.Remove(folder, User.GetUserId());
+                _bll.FolderService.Remove(folder);
                 await _bll.SaveChangesAsync();
             }
             catch (UnauthorizedAccessException e)

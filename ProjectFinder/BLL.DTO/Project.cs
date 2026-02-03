@@ -24,6 +24,10 @@ public class Project : IDomainId
     public DateTime? Deadline { get; set; }
     public List<string> AttachmentsPaths { get; set; } = [];
     
+    public List<Guid> FolderIds { get; set; } = new ();
+    public List<Guid> TagIds { get; set; } = new ();
+    public List<Guid> StepIds { get; set; } = new ();
+    
     public ICollection<ProjectFolder>? ProjectFolders { get; set; }
     public ICollection<ProjectTag>? ProjectTags { get; set; }
     public ICollection<Comment>? Comments { get; set; }

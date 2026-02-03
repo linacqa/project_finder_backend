@@ -79,7 +79,7 @@ namespace WebApp.ApiControllers
         
             try
             {
-                await _bll.StepService.UpdateAsync(_mapper.Map(step)!, User.GetUserId());
+                await _bll.StepService.UpdateAsync(_mapper.Map(step)!);
                 await _bll.SaveChangesAsync();
             }
             catch (UnauthorizedAccessException e)
@@ -107,7 +107,7 @@ namespace WebApp.ApiControllers
         
             try
             {
-                _bll.StepService.Add(bllStep, User.GetUserId());
+                _bll.StepService.Add(bllStep);
                 await _bll.SaveChangesAsync();
             } catch (UnauthorizedAccessException e)
             {
@@ -143,7 +143,7 @@ namespace WebApp.ApiControllers
         
             try
             {
-                _bll.StepService.Remove(step, User.GetUserId());
+                _bll.StepService.Remove(step);
                 await _bll.SaveChangesAsync();
             }
             catch (UnauthorizedAccessException e)

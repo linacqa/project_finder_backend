@@ -122,10 +122,11 @@ public static class AppDataInit
     
     private static void SeedStepStatuses(AppDbContext context)
     {
-        foreach (var name in InitialData.StepStatuses)
+        foreach (var (name, id) in InitialData.StepStatuses)
         {
             var stepStatus = new Domain.StepStatus()
             {
+                Id = id ?? Guid.NewGuid(),
                 Name = name,
                 CreatedBy = "system",
                 CreatedAt = DateTime.UtcNow,
@@ -148,10 +149,11 @@ public static class AppDataInit
     
     private static void SeedProjectTypes(AppDbContext context)
     {
-        foreach (var name in InitialData.ProjectTypes)
+        foreach (var (name, id) in InitialData.ProjectTypes)
         {
             var projectType = new Domain.ProjectType()
             {
+                Id = id ?? Guid.NewGuid(),
                 Name = name,
                 CreatedBy = "system",
                 CreatedAt = DateTime.UtcNow,
@@ -174,10 +176,11 @@ public static class AppDataInit
     
     private static void SeedProjectStatuses(AppDbContext context)
     {
-        foreach (var name in InitialData.ProjectStatuses)
+        foreach (var (name, id) in InitialData.ProjectStatuses)
         {
             var projectStatus = new Domain.ProjectStatus()
             {
+                Id = id ?? Guid.NewGuid(),
                 Name = name,
                 CreatedBy = "system",
                 CreatedAt = DateTime.UtcNow,

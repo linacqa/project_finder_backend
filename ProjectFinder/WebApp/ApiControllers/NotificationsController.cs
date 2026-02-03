@@ -79,7 +79,7 @@ namespace WebApp.ApiControllers
         
             try
             {
-                await _bll.NotificationService.UpdateAsync(_mapper.Map(notification)!, User.GetUserId());
+                await _bll.NotificationService.UpdateAsync(_mapper.Map(notification)!);
                 await _bll.SaveChangesAsync();
             }
             catch (UnauthorizedAccessException e)
@@ -107,7 +107,7 @@ namespace WebApp.ApiControllers
         
             try
             {
-                _bll.NotificationService.Add(bllNotification, User.GetUserId());
+                _bll.NotificationService.Add(bllNotification);
                 await _bll.SaveChangesAsync();
             } catch (UnauthorizedAccessException e)
             {
@@ -143,7 +143,7 @@ namespace WebApp.ApiControllers
         
             try
             {
-                _bll.NotificationService.Remove(notification, User.GetUserId());
+                _bll.NotificationService.Remove(notification);
                 await _bll.SaveChangesAsync();
             }
             catch (UnauthorizedAccessException e)

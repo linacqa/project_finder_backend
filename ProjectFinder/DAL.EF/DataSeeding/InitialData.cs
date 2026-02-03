@@ -6,7 +6,7 @@ public static class InitialData
         Roles =
         [
             ("admin", null),
-            ("user", Guid.Parse("00000000-0000-0000-0000-000000000002")),
+            ("user", null),
             ("student", null),
             ("teacher", null),
         ];
@@ -27,26 +27,26 @@ public static class InitialData
         ("hidden-folder", false),
     ];
     
-    public static readonly string[] StepStatuses =
+    public static readonly (string name, Guid? id)[] StepStatuses =
     [
-        "Not Started",
-        "In Progress",
-        "Completed",
+        ("Not Started", Guid.Parse("00000000-0000-0000-0000-000000000001")),
+        ("In Progress", Guid.Parse("00000000-0000-0000-0000-000000000002")),
+        ("Completed", Guid.Parse("00000000-0000-0000-0000-000000000003")),
     ];
 
-    public static readonly string[] ProjectTypes =
+    public static readonly (string name, Guid? id)[] ProjectTypes =
     [
-        "Final Thesis",
-        "Internship",
-        "Final Thesis + Internship",
+        ("Final Thesis", Guid.Parse("00000000-0000-0000-0000-000000000001")),
+        ("Internship", Guid.Parse("00000000-0000-0000-0000-000000000002")),
+        ("Final Thesis + Internship", Guid.Parse("00000000-0000-0000-0000-000000000003")),
     ];
 
-    public static readonly string[] ProjectStatuses =
+    public static readonly (string name, Guid? id)[] ProjectStatuses =
     [
-        "Draft",
-        "Open",
-        "Closed",
-        "Archived",
-        "Completed",
+        ("Draft", Guid.Parse("00000000-0000-0000-0000-000000000001")),
+        ("Open", Guid.Parse("00000000-0000-0000-0000-000000000002")),
+        ("Closed", Guid.Parse("00000000-0000-0000-0000-000000000003")),
+        ("Archived", Guid.Parse("00000000-0000-0000-0000-000000000004")),
+        ("Completed", Guid.Parse("00000000-0000-0000-0000-000000000005")),
     ];
 }
