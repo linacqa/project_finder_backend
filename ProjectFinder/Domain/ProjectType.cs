@@ -1,8 +1,10 @@
-﻿namespace Domain;
+﻿using Base.Domain;
 
-public enum ProjectType
+namespace Domain;
+
+public class ProjectType : BaseEntity
 {
-    Thesis = 0,
-    Internship = 1,
-    ThesisAndInternship = 2
+    public string Name { get; set; } = default!;
+    
+    public ICollection<Project>? Projects { get; set; }
 }

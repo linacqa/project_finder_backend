@@ -21,8 +21,18 @@ public class ProjectUOWMapper : IMapper<DAL.DTO.Project, Domain.Project>
             ExternalSupervisor = entity.ExternalSupervisor,
             MinStudents = entity.MinStudents,
             MaxStudents = entity.MaxStudents,
-            ProjectType = entity.ProjectType,
-            ProjectStatus = entity.ProjectStatus,
+            ProjectTypeId = entity.ProjectTypeId,
+            ProjectType = entity.ProjectType != null ? new ProjectType()
+            {
+                Id = entity.ProjectType.Id,
+                Name = entity.ProjectType.Name,
+            } : null,
+            ProjectStatusId = entity.ProjectStatusId,
+            ProjectStatus = entity.ProjectStatus != null ? new ProjectStatus()
+            {
+                Id = entity.ProjectStatus.Id,
+                Name = entity.ProjectStatus.Name,
+            } : null,
             Deadline = entity.Deadline,
             AttachmentsPaths = entity.AttachmentsPaths,
         };
@@ -42,8 +52,18 @@ public class ProjectUOWMapper : IMapper<DAL.DTO.Project, Domain.Project>
             ExternalSupervisor = entity.ExternalSupervisor,
             MinStudents = entity.MinStudents,
             MaxStudents = entity.MaxStudents,
-            ProjectType = entity.ProjectType,
-            ProjectStatus = entity.ProjectStatus,
+            ProjectTypeId = entity.ProjectTypeId,
+            ProjectType = entity.ProjectType != null ? new Domain.ProjectType()
+            {
+                Id = entity.ProjectType.Id,
+                Name = entity.ProjectType.Name,
+            } : null,
+            ProjectStatusId = entity.ProjectStatusId,
+            ProjectStatus = entity.ProjectStatus != null ? new Domain.ProjectStatus()
+            {
+                Id = entity.ProjectStatus.Id,
+                Name = entity.ProjectStatus.Name,
+            } : null,
             Deadline = entity.Deadline,
             AttachmentsPaths = entity.AttachmentsPaths,
         };

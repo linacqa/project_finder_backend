@@ -22,9 +22,12 @@ public class AppDbContext : IdentityDbContext<AppUser, AppRole, Guid, IdentityUs
     public DbSet<Notification> Notifications { get; set; } = default!;
     public DbSet<Project> Projects { get; set; } = default!;
     public DbSet<ProjectFolder> ProjectFolders { get; set; } = default!;
+    public DbSet<ProjectStatus> ProjectStatuses { get; set; } = default!;
     public DbSet<ProjectStep> ProjectSteps { get; set; } = default!;
     public DbSet<ProjectTag> ProjectTags { get; set; } = default!;
+    public DbSet<ProjectType> ProjectTypes { get; set; } = default!;
     public DbSet<Step> Steps { get; set; } = default!;
+    public DbSet<StepStatus> StepStatuses { get; set; } = default!;
     public DbSet<Tag> Tags { get; set; } = default!;
     public DbSet<UserGroup> UserGroups { get; set; } = default!;
     public DbSet<UserProject> UserProjects { get; set; } = default!;

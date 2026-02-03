@@ -1,9 +1,10 @@
-﻿namespace Domain;
+﻿using Base.Domain;
 
-public enum StepStatus
+namespace Domain;
+
+public class StepStatus : BaseEntity
 {
-    NotStarted = 0,
-    InProgress = 1,
-    Completed = 2,
-    OnHold = 3,
+    public string Name { get; set; } = default!;
+    
+    public ICollection<ProjectStep>? ProjectSteps { get; set; }
 }

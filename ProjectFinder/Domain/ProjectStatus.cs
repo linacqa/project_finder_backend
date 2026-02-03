@@ -1,11 +1,10 @@
-﻿namespace Domain;
+﻿using Base.Domain;
 
-public enum ProjectStatus
+namespace Domain;
+
+public class ProjectStatus : BaseEntity
 {
-    Draft = 0,
-    Archived = 1,
-    Open = 2,
-    Closed = 3,
-    InProgress = 4,
-    Completed = 5
+    public string Name { get; set; } = default!;
+    
+    public ICollection<Project>? Projects { get; set; }
 }

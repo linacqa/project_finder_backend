@@ -18,8 +18,8 @@ public class ProjectMapper : IMapper<DTO.v1.Project, BLL.DTO.Project>
             ExternalSupervisor = entity.ExternalSupervisor,
             MinStudents = entity.MinStudents,
             MaxStudents = entity.MaxStudents,
-            ProjectType = entity.ProjectType,
-            ProjectStatus = entity.ProjectStatus,
+            ProjectTypeId = entity.ProjectTypeId,
+            ProjectStatusId = entity.ProjectStatusId,
             Deadline = entity.Deadline,
             AttachmentsPaths = entity.AttachmentsPaths,
         };
@@ -41,8 +41,8 @@ public class ProjectMapper : IMapper<DTO.v1.Project, BLL.DTO.Project>
             ExternalSupervisor = entity.ExternalSupervisor,
             MinStudents = entity.MinStudents,
             MaxStudents = entity.MaxStudents,
-            ProjectType = entity.ProjectType,
-            ProjectStatus = entity.ProjectStatus,
+            ProjectTypeId = entity.ProjectTypeId,
+            ProjectStatusId = entity.ProjectStatusId,
             Deadline = entity.Deadline,
             AttachmentsPaths = entity.AttachmentsPaths,
         };
@@ -62,8 +62,8 @@ public class ProjectMapper : IMapper<DTO.v1.Project, BLL.DTO.Project>
             ExternalSupervisor = entity.ExternalSupervisor,
             MinStudents = entity.MinStudents,
             MaxStudents = entity.MaxStudents,
-            ProjectType = entity.ProjectType,
-            ProjectStatus = entity.ProjectStatus,
+            ProjectTypeId = entity.ProjectTypeId,
+            ProjectStatusId = entity.ProjectStatusId,
             Deadline = entity.Deadline,
             AttachmentsPaths = new List<string>(),
         };

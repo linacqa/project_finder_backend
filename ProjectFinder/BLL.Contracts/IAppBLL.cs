@@ -14,9 +14,12 @@ public interface IAppBLL : IBaseBLL
     INotificationService NotificationService { get; }
     IProjectFolderService ProjectFolderService { get; }
     IProjectService ProjectService { get; }
+    IProjectStatusService ProjectStatusService { get; }
     IProjectStepService ProjectStepService { get; }
     IProjectTagService ProjectTagService { get; }
+    IProjectTypeService ProjectTypeService { get; }
     IStepService StepService { get; }
+    IStepStatusService StepStatusService { get; }
     ITagService TagService { get; }
     IUserGroupService UserGroupService { get; }
     IUserProjectService UserProjectService { get; }

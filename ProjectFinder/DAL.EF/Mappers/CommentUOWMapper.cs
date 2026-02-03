@@ -34,8 +34,18 @@ public class CommentUOWMapper : IMapper<DAL.DTO.Comment, Domain.Comment>
                 ExternalSupervisor = entity.Project.ExternalSupervisor,
                 MinStudents = entity.Project.MinStudents,
                 MaxStudents = entity.Project.MaxStudents,
-                ProjectType = entity.Project.ProjectType,
-                ProjectStatus = entity.Project.ProjectStatus,
+                ProjectTypeId = entity.Project.ProjectTypeId,
+                ProjectType = entity.Project.ProjectType != null ? new ProjectType()
+                {
+                    Id = entity.Project.ProjectType.Id,
+                    Name = entity.Project.ProjectType.Name,
+                } : null,
+                ProjectStatusId = entity.Project.ProjectStatusId,
+                ProjectStatus = entity.Project.ProjectStatus != null ? new ProjectStatus()
+                {
+                    Id = entity.Project.ProjectStatus.Id,
+                    Name = entity.Project.ProjectStatus.Name,
+                } : null,
                 Deadline = entity.Project.Deadline,
                 AttachmentsPaths = entity.Project.AttachmentsPaths,
             } : null,
@@ -72,8 +82,18 @@ public class CommentUOWMapper : IMapper<DAL.DTO.Comment, Domain.Comment>
                 ExternalSupervisor = entity.Project.ExternalSupervisor,
                 MinStudents = entity.Project.MinStudents,
                 MaxStudents = entity.Project.MaxStudents,
-                ProjectType = entity.Project.ProjectType,
-                ProjectStatus = entity.Project.ProjectStatus,
+                ProjectTypeId = entity.Project.ProjectTypeId,
+                ProjectType = entity.Project.ProjectType != null ? new Domain.ProjectType()
+                {
+                    Id = entity.Project.ProjectType.Id,
+                    Name = entity.Project.ProjectType.Name,
+                } : null,
+                ProjectStatusId = entity.Project.ProjectStatusId,
+                ProjectStatus = entity.Project.ProjectStatus != null ? new Domain.ProjectStatus()
+                {
+                    Id = entity.Project.ProjectStatus.Id,
+                    Name = entity.Project.ProjectStatus.Name,
+                } : null,
                 Deadline = entity.Project.Deadline,
                 AttachmentsPaths = entity.Project.AttachmentsPaths,
             } : null,

@@ -14,8 +14,13 @@ public class Project : IDomainId
     public string? ExternalSupervisor { get; set; } = default!;
     public int MinStudents { get; set; }
     public int MaxStudents { get; set; }
-    public ProjectType ProjectType { get; set; }
-    public ProjectStatus ProjectStatus { get; set; }
+    
+    public Guid ProjectTypeId { get; set; }
+    public ProjectType? ProjectType { get; set; }
+    
+    public Guid ProjectStatusId { get; set; }
+    public ProjectStatus? ProjectStatus { get; set; }
+    
     public DateTime? Deadline { get; set; }
     public List<string> AttachmentsPaths { get; set; } = [];
     

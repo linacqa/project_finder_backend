@@ -9,7 +9,9 @@ public static class AppDataInit
     public static void SeedAppData(AppDbContext context)
     {
         SeedFolders(context);
-        SeedSteps(context);
+        SeedProjectTypes(context);
+        SeedProjectStatuses(context);
+        SeedStepStatuses(context);
         
         context.SaveChanges();
     }
@@ -118,28 +120,80 @@ public static class AppDataInit
         }
     }
     
-    private static void SeedSteps(AppDbContext context)
+    private static void SeedStepStatuses(AppDbContext context)
     {
-        foreach (var name in InitialData.Steps)
+        foreach (var name in InitialData.StepStatuses)
         {
-            var step = new Domain.Step()
+            var stepStatus = new Domain.StepStatus()
             {
                 Name = name,
                 CreatedBy = "system",
                 CreatedAt = DateTime.UtcNow,
             };
             
-            if (context.Steps.Any(f => f.Name == name)) continue;
+            if (context.StepStatuses.Any(f => f.Name == name)) continue;
             
-            var result = context.Steps.AddAsync(step).Result;
+            var result = context.StepStatuses.AddAsync(stepStatus).Result;
             
             if (result.State == EntityState.Added)
             {
-                Console.WriteLine($"Step {name} added to database.");
+                Console.WriteLine($"Step status {name} added to database.");
             }
             else
             {
-                Console.WriteLine($"Failed to add Step {name} into database.");
+                Console.WriteLine($"Failed to add Step status {name} into database.");
+            }
+        }
+    }
+    
+    private static void SeedProjectTypes(AppDbContext context)
+    {
+        foreach (var name in InitialData.ProjectTypes)
+        {
+            var projectType = new Domain.ProjectType()
+            {
+                Name = name,
+                CreatedBy = "system",
+                CreatedAt = DateTime.UtcNow,
+            };
+            
+            if (context.ProjectTypes.Any(f => f.Name == name)) continue;
+            
+            var result = context.ProjectTypes.AddAsync(projectType).Result;
+            
+            if (result.State == EntityState.Added)
+            {
+                Console.WriteLine($"Project type {name} added to database.");
+            }
+            else
+            {
+                Console.WriteLine($"Failed to add Project type {name} into database.");
+            }
+        }
+    }
+    
+    private static void SeedProjectStatuses(AppDbContext context)
+    {
+        foreach (var name in InitialData.ProjectStatuses)
+        {
+            var projectStatus = new Domain.ProjectStatus()
+            {
+                Name = name,
+                CreatedBy = "system",
+                CreatedAt = DateTime.UtcNow,
+            };
+            
+            if (context.ProjectStatuses.Any(f => f.Name == name)) continue;
+            
+            var result = context.ProjectStatuses.AddAsync(projectStatus).Result;
+            
+            if (result.State == EntityState.Added)
+            {
+                Console.WriteLine($"Project status {name} added to database.");
+            }
+            else
+            {
+                Console.WriteLine($"Failed to add Project status {name} into database.");
             }
         }
     }

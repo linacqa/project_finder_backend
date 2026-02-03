@@ -14,7 +14,7 @@ public class ProjectStepBLLMapper : IMapper<BLL.DTO.ProjectStep, DAL.DTO.Project
             Id = entity.Id,
             ProjectId = entity.ProjectId,
             StepId = entity.StepId,
-            StepStatus = entity.StepStatus,
+            StepStatusId = entity.StepStatusId,
             Order = entity.Order,
         };
         
@@ -30,7 +30,7 @@ public class ProjectStepBLLMapper : IMapper<BLL.DTO.ProjectStep, DAL.DTO.Project
             Id = entity.Id,
             ProjectId = entity.ProjectId,
             StepId = entity.StepId,
-            StepStatus = entity.StepStatus,
+            StepStatusId = entity.StepStatusId,
             Order = entity.Order,
         };
         

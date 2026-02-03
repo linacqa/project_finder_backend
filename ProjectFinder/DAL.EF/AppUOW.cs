@@ -50,6 +50,10 @@ public class AppUOW : BaseUOW<AppDbContext>, IAppUOW
     public IProjectRepository ProjectRepository =>
         _projectRepository ??= new ProjectRepository(UOWDbContext);
     
+    private IProjectStatusRepository? _projectStatusRepository;
+    public IProjectStatusRepository ProjectStatusRepository =>
+        _projectStatusRepository ??= new ProjectStatusRepository(UOWDbContext);
+    
     private IProjectStepRepository? _projectStepRepository;
     public IProjectStepRepository ProjectStepRepository =>
         _projectStepRepository ??= new ProjectStepRepository(UOWDbContext);
@@ -58,9 +62,17 @@ public class AppUOW : BaseUOW<AppDbContext>, IAppUOW
     public IProjectTagRepository ProjectTagRepository =>
         _projectTagRepository ??= new ProjectTagRepository(UOWDbContext);
     
+    private IProjectTypeRepository? _projectTypeRepository;
+    public IProjectTypeRepository ProjectTypeRepository =>
+        _projectTypeRepository ??= new ProjectTypeRepository(UOWDbContext);
+    
     private IStepRepository? _stepRepository;
     public IStepRepository StepRepository =>
         _stepRepository ??= new StepRepository(UOWDbContext);
+    
+    private IStepStatusRepository? _stepStatusRepository;
+    public IStepStatusRepository StepStatusRepository =>
+        _stepStatusRepository ??= new StepStatusRepository(UOWDbContext);
     
     private ITagRepository? _tagRepository;
     public ITagRepository TagRepository =>

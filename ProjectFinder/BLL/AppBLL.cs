@@ -82,6 +82,13 @@ public class AppBLL : BaseBLL<IAppUOW>, IAppBLL
             new ProjectBLLMapper()
         );
     
+    private IProjectStatusService? _projectStatusService;
+    public IProjectStatusService ProjectStatusService =>
+        _projectStatusService ??= new ProjectStatusService(
+            BLLUOW, 
+            new ProjectStatusBLLMapper()
+        );
+    
     private IProjectStepService? _projectStepService;
     public IProjectStepService ProjectStepService =>
         _projectStepService ??= new ProjectStepService(
@@ -96,11 +103,25 @@ public class AppBLL : BaseBLL<IAppUOW>, IAppBLL
             new ProjectTagBLLMapper()
         );
     
+    private IProjectTypeService? _projectTypeService;
+    public IProjectTypeService ProjectTypeService =>
+        _projectTypeService ??= new ProjectTypeService(
+            BLLUOW, 
+            new ProjectTypeBLLMapper()
+        );
+    
     private IStepService? _stepService;
     public IStepService StepService =>
         _stepService ??= new StepService(
             BLLUOW, 
             new StepBLLMapper()
+        );
+    
+    private IStepStatusService? _stepStatusService;
+    public IStepStatusService StepStatusService =>
+        _stepStatusService ??= new StepStatusService(
+            BLLUOW, 
+            new StepStatusBLLMapper()
         );
     
     private ITagService? _tagService;

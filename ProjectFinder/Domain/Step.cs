@@ -4,7 +4,7 @@ namespace Domain;
 
 public class Step : BaseEntity
 {
-    public string? Name { get; set; } = default!;
+    public string Name { get; set; } = default!;
     
     public ICollection<ProjectStep>? ProjectSteps { get; set; }
 }

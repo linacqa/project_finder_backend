@@ -6,5 +6,5 @@ public class Step : IDomainId
 {
     public Guid Id { get; set; }
     
-    public string? Name { get; set; } = default!;
+    public string Name { get; set; } = default!;
 }

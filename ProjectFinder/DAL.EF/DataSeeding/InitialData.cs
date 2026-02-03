@@ -27,10 +27,26 @@ public static class InitialData
         ("hidden-folder", false),
     ];
     
-    public static readonly string[] Steps =
+    public static readonly string[] StepStatuses =
     [
         "Not Started",
         "In Progress",
+        "Completed",
+    ];
+
+    public static readonly string[] ProjectTypes =
+    [
+        "Final Thesis",
+        "Internship",
+        "Final Thesis + Internship",
+    ];
+
+    public static readonly string[] ProjectStatuses =
+    [
+        "Draft",
+        "Open",
+        "Closed",
+        "Archived",
         "Completed",
     ];
 }
