@@ -110,11 +110,13 @@ public class AccountController : ControllerBase
         appUser = new AppUser()
         {
             Email = registrationData.Email,
+            PhoneNumber = registrationData.PhoneNumber,
             UserName = registrationData.Email,
             FirstName = registrationData.FirstName,
             LastName = registrationData.LastName,
             UniId = registrationData.UniId,
             MatriculationNumber = registrationData.MatriculationNumber,
+            Program = registrationData.Program,
             AuthType = AuthType.Local,
             RefreshTokens = new List<AppRefreshToken>() { refreshToken }
         };
@@ -591,7 +593,8 @@ public class AccountController : ControllerBase
             LastName = appUser.LastName,
             Role = (await _userManager.GetRolesAsync(appUser)).FirstOrDefault() ?? "user",
             UniId = appUser.UniId,
-            MatriculationNumber = appUser.MatriculationNumber
+            MatriculationNumber = appUser.MatriculationNumber,
+            Program = appUser.Program,
         };
 
         return Ok(userInfo);

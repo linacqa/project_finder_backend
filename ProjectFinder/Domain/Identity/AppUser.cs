@@ -19,6 +19,9 @@ public class AppUser : BaseUser<AppUserRole>
     [MaxLength(15)]
     public string? MatriculationNumber { get; set; }
     
+    [MaxLength(128)]
+    public string? Program { get; set; }
+    
     [MaxLength(450)]
     public string? AzureObjectId { get; set; }
 

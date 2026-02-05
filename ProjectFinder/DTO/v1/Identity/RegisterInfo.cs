@@ -7,6 +7,9 @@ public class RegisterInfo
     [Required]
     [MaxLength(128)]
     public string Email { get; set; } = default!;
+    
+    [MaxLength(32)]
+    public string? PhoneNumber { get; set; }
 
     [Required]
     [MaxLength(128)]
@@ -27,4 +30,6 @@ public class RegisterInfo
     public string? UniId { get; set; }
     
     public string? MatriculationNumber { get; set; }
+    
+    public string? Program { get; set; }
 }

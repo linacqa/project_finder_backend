@@ -27,6 +27,8 @@ public class ProjectService : BaseService<BLL.DTO.Project, DAL.DTO.Project, DAL.
         var dalEntity = Mapper.Map(entity);
         ServiceRepository.Add(dalEntity!, userId);
         
+        // TODO: check for existence of entities with such ids before adding
+        
         if (entity.FolderIds.Count > 0)
         {
             foreach (var folderId in entity.FolderIds)
