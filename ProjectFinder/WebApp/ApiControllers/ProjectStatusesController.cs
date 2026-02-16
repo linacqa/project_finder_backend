@@ -11,13 +11,13 @@ namespace WebApp.ApiControllers
     [ApiVersion("1.0")]
     [Route("api/v{version:apiVersion}/[controller]")]
     [ApiController]
-    public class ProjectStatussController : ControllerBase
+    public class ProjectStatusesController : ControllerBase
     {
         private readonly IAppBLL _bll;
         
         private readonly DTO.v1.Mappers.ProjectStatusMapper _mapper = new();
 
-        public ProjectStatussController(IAppBLL bll)
+        public ProjectStatusesController(IAppBLL bll)
         {
             _bll = bll;
         }

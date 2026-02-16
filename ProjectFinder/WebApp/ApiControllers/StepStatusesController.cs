@@ -11,13 +11,13 @@ namespace WebApp.ApiControllers
     [ApiVersion("1.0")]
     [Route("api/v{version:apiVersion}/[controller]")]
     [ApiController]
-    public class StepStatussController : ControllerBase
+    public class StepStatusesController : ControllerBase
     {
         private readonly IAppBLL _bll;
         
         private readonly DTO.v1.Mappers.StepStatusMapper _mapper = new();
 
-        public StepStatussController(IAppBLL bll)
+        public StepStatusesController(IAppBLL bll)
         {
             _bll = bll;
         }
