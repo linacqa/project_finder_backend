@@ -12,6 +12,7 @@ public class ProjectService : BaseService<BLL.DTO.Project, DAL.DTO.Project, DAL.
     private readonly IProjectFolderRepository _projectFolderRepository;
     private readonly IProjectTagRepository _projectTagRepository;
     private readonly IProjectStepRepository _projectStepRepository;
+    private readonly IUserProjectRepository _userProjectRepository;
 
     public ProjectService(
         IAppUOW serviceUOW, 
@@ -20,6 +21,7 @@ public class ProjectService : BaseService<BLL.DTO.Project, DAL.DTO.Project, DAL.
         _projectFolderRepository = serviceUOW.ProjectFolderRepository;
         _projectTagRepository = serviceUOW.ProjectTagRepository;
         _projectStepRepository = serviceUOW.ProjectStepRepository;
+        _userProjectRepository = serviceUOW.UserProjectRepository;
     }
     
     public override void Add(BLL.DTO.Project entity, Guid userId = default)
@@ -61,9 +63,36 @@ public class ProjectService : BaseService<BLL.DTO.Project, DAL.DTO.Project, DAL.
                 {
                     StepId = stepId,
                     ProjectId = dalEntity!.Id,
-                    StepStatusId = Guid.Parse("00000000-0000-0000-0000-000000000001"),
+                    StepStatusId = Guid.Parse("00000000-0000-0000-0000-000000000001"), // not started
                 });
             }
+        }
+
+        _userProjectRepository.Add(new DAL.DTO.UserProject()
+        {
+            ProjectId = dalEntity!.Id,
+            UserId = entity.AuthorId,
+            UserProjectRoleId = Guid.Parse("00000000-0000-0000-0000-000000000001"), // author
+        });
+        
+        if (entity.PrimarySupervisorId != null)
+        {
+            _userProjectRepository.Add(new DAL.DTO.UserProject()
+            {
+                ProjectId = dalEntity!.Id,
+                UserId = entity.PrimarySupervisorId.Value,
+                UserProjectRoleId = Guid.Parse("00000000-0000-0000-0000-000000000002"), // primary supervisor
+            });
+        }
+        
+        if (entity.ExternalSupervisorId != null)
+        {
+            _userProjectRepository.Add(new DAL.DTO.UserProject()
+            {
+                ProjectId = dalEntity!.Id,
+                UserId = entity.ExternalSupervisorId.Value,
+                UserProjectRoleId = Guid.Parse("00000000-0000-0000-0000-000000000003"), // external supervisor
+            });
         }
     }
 }

@@ -23,5 +23,6 @@ public interface IAppBLL : IBaseBLL
     ITagService TagService { get; }
     IUserGroupService UserGroupService { get; }
     IUserProjectService UserProjectService { get; }
+    IUserProjectRoleService UserProjectRoleService { get; }
     IUserTagService UserTagService { get; }
 }

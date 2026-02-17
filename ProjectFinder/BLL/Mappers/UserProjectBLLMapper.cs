@@ -14,6 +14,7 @@ public class UserProjectBLLMapper : IMapper<BLL.DTO.UserProject, DAL.DTO.UserPro
             Id = entity.Id,
             UserId = entity.UserId,
             ProjectId = entity.ProjectId,
+            UserProjectRoleId = entity.UserProjectRoleId,
         };
         
         return result;
@@ -28,6 +29,7 @@ public class UserProjectBLLMapper : IMapper<BLL.DTO.UserProject, DAL.DTO.UserPro
             Id = entity.Id,
             UserId = entity.UserId,
             ProjectId = entity.ProjectId,
+            UserProjectRoleId = entity.UserProjectRoleId,
         };
         
         return result;

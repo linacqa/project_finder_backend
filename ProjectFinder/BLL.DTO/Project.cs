@@ -28,6 +28,11 @@ public class Project : IDomainId
     public List<Guid> TagIds { get; set; } = new ();
     public List<Guid> StepIds { get; set; } = new ();
     
+    public Guid AuthorId { get; set; }
+    public Guid? ExternalSupervisorId { get; set; }
+    public Guid? PrimarySupervisorId { get; set; }
+    public string? PrimarySupervisor { get; set; }
+    
     public ICollection<ProjectFolder>? ProjectFolders { get; set; }
     public ICollection<ProjectTag>? ProjectTags { get; set; }
     public ICollection<Comment>? Comments { get; set; }

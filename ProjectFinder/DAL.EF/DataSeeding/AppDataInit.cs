@@ -12,6 +12,7 @@ public static class AppDataInit
         SeedProjectTypes(context);
         SeedProjectStatuses(context);
         SeedStepStatuses(context);
+        SeedUserProjectRoles(context);
         
         context.SaveChanges();
     }
@@ -197,6 +198,33 @@ public static class AppDataInit
             else
             {
                 Console.WriteLine($"Failed to add Project status {name} into database.");
+            }
+        }
+    }
+
+    private static void SeedUserProjectRoles(AppDbContext context)
+    {
+        foreach (var (name, id) in InitialData.UserProjectRoles)
+        {
+            var userProjectRole = new Domain.UserProjectRole()
+            {
+                Id = id ?? Guid.NewGuid(),
+                Name = name,
+                CreatedBy = "system",
+                CreatedAt = DateTime.UtcNow,
+            };
+            
+            if (context.UserProjectRoles.Any(f => f.Name == name)) continue;
+            
+            var result = context.UserProjectRoles.AddAsync(userProjectRole).Result;
+            
+            if (result.State == EntityState.Added)
+            {
+                Console.WriteLine($"User project role {name} added to database.");
+            }
+            else
+            {
+                Console.WriteLine($"Failed to add User project role {name} into database.");
             }
         }
     }

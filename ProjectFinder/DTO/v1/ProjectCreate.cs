@@ -17,6 +17,11 @@ public class ProjectCreate
     public List<Guid> FolderIds { get; set; } = new ();
     public List<Guid> TagIds { get; set; } = new ();
     public List<Guid> StepIds { get; set; } = new ();
+    
+    public Guid AuthorId { get; set; }
+    public Guid? ExternalSupervisorId { get; set; }
+    public Guid? PrimarySupervisorId { get; set; }
+    public string? PrimarySupervisor { get; set; }
     // public List<string> AttachmentsPaths { get; set; } = [];
     
     // public Guid CreatorId { get; set; }

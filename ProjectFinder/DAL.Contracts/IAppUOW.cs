@@ -23,5 +23,6 @@ public interface IAppUOW : IBaseUOW
     ITagRepository TagRepository { get; }
     IUserGroupRepository UserGroupRepository { get; }
     IUserProjectRepository UserProjectRepository { get; }
+    IUserProjectRoleRepository UserProjectRoleRepository { get; }
     IUserTagRepository UserTagRepository { get; }
 }

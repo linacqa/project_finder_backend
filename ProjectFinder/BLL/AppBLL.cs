@@ -145,6 +145,13 @@ public class AppBLL : BaseBLL<IAppUOW>, IAppBLL
             new UserProjectBLLMapper()
         );
     
+    private IUserProjectRoleService? _userProjectRoleService;
+    public IUserProjectRoleService UserProjectRoleService =>
+        _userProjectRoleService ??= new UserProjectRoleService(
+            BLLUOW, 
+            new UserProjectRoleBLLMapper()
+        );
+    
     private IUserTagService? _userTagService;
     public IUserTagService UserTagService =>
         _userTagService ??= new UserTagService(

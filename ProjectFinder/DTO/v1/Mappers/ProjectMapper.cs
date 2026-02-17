@@ -15,6 +15,7 @@ public class ProjectMapper : IMapper<DTO.v1.Project, BLL.DTO.Project>
             TitleInEnglish = entity.TitleInEnglish,
             Description = entity.Description,
             Client = entity.Client,
+            Supervisor = entity.PrimarySupervisor,
             ExternalSupervisor = entity.ExternalSupervisor,
             MinStudents = entity.MinStudents,
             MaxStudents = entity.MaxStudents,
@@ -38,6 +39,7 @@ public class ProjectMapper : IMapper<DTO.v1.Project, BLL.DTO.Project>
             TitleInEnglish = entity.TitleInEnglish,
             Description = entity.Description,
             Client = entity.Client,
+            PrimarySupervisor = entity.Supervisor,
             ExternalSupervisor = entity.ExternalSupervisor,
             MinStudents = entity.MinStudents,
             MaxStudents = entity.MaxStudents,
@@ -69,6 +71,10 @@ public class ProjectMapper : IMapper<DTO.v1.Project, BLL.DTO.Project>
             FolderIds = entity.FolderIds,
             TagIds = entity.TagIds,
             StepIds = entity.StepIds,
+            AuthorId = entity.AuthorId,
+            ExternalSupervisorId = entity.ExternalSupervisorId,
+            PrimarySupervisorId = entity.PrimarySupervisorId,
+            PrimarySupervisor = entity.PrimarySupervisor,
         };
         
         return result;

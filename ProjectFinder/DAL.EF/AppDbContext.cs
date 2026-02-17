@@ -31,6 +31,7 @@ public class AppDbContext : IdentityDbContext<AppUser, AppRole, Guid, IdentityUs
     public DbSet<Tag> Tags { get; set; } = default!;
     public DbSet<UserGroup> UserGroups { get; set; } = default!;
     public DbSet<UserProject> UserProjects { get; set; } = default!;
+    public DbSet<UserProjectRole> UserProjectRoles { get; set; } = default!;
     public DbSet<UserTag> UserTags { get; set; } = default!;
     
     public DbSet<AppRefreshToken> RefreshTokens { get; set; } = default!;

@@ -49,6 +49,12 @@ public class UserProjectUOWMapper : IMapper<DAL.DTO.UserProject, Domain.UserProj
                 Deadline = entity.Project.Deadline,
                 AttachmentsPaths = entity.Project.AttachmentsPaths,
             } : null,
+            UserProjectRoleId = entity.UserProjectRoleId,
+            UserProjectRole = entity.UserProjectRole != null ? new UserProjectRole()
+            {
+                Id = entity.UserProjectRole.Id,
+                Name = entity.UserProjectRole.Name,
+            } : null,
         };
     }
 
@@ -93,6 +99,12 @@ public class UserProjectUOWMapper : IMapper<DAL.DTO.UserProject, Domain.UserProj
                 } : null,
                 Deadline = entity.Project.Deadline,
                 AttachmentsPaths = entity.Project.AttachmentsPaths,
+            } : null,
+            UserProjectRoleId = entity.UserProjectRoleId,
+            UserProjectRole = entity.UserProjectRole != null ? new Domain.UserProjectRole()
+            {
+                Id = entity.UserProjectRole.Id,
+                Name = entity.UserProjectRole.Name,
             } : null,
         };
     }

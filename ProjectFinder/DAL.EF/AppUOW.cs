@@ -86,6 +86,10 @@ public class AppUOW : BaseUOW<AppDbContext>, IAppUOW
     public IUserProjectRepository UserProjectRepository =>
         _userProjectRepository ??= new UserProjectRepository(UOWDbContext);
     
+    private IUserProjectRoleRepository? _userProjectRoleRepository;
+    public IUserProjectRoleRepository UserProjectRoleRepository =>
+        _userProjectRoleRepository ??= new UserProjectRoleRepository(UOWDbContext);
+    
     private IUserTagRepository? _userTagRepository;
     public IUserTagRepository UserTagRepository =>
         _userTagRepository ??= new UserTagRepository(UOWDbContext);

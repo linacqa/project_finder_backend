@@ -49,4 +49,11 @@ public static class InitialData
         ("Archived", Guid.Parse("00000000-0000-0000-0000-000000000004")),
         ("Completed", Guid.Parse("00000000-0000-0000-0000-000000000005")),
     ];
+
+    public static readonly (string name, Guid? id)[] UserProjectRoles = [
+        ("Author", Guid.Parse("00000000-0000-0000-0000-000000000001")),
+        ("Supervisor", Guid.Parse("00000000-0000-0000-0000-000000000002")),
+        ("External Supervisor", Guid.Parse("00000000-0000-0000-0000-000000000003")),
+        ("Executor", Guid.Parse("00000000-0000-0000-0000-000000000004")),
+    ];
 }
