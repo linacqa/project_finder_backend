@@ -11,6 +11,7 @@ public class AppUserUOWMapper
             Id = entity.Id,
             FirstName = entity.FirstName,
             LastName = entity.LastName,
+            Email = entity.Email,
             AzureObjectId = entity.AzureObjectId,
             AuthType = entity.AuthType,
         };

@@ -11,6 +11,8 @@ public class AppUser : IDomainId
     
     public string LastName { get; set; } = default!;
     
+    public string? Email { get; set; }
+    
     public string? AzureObjectId { get; set; }
 
     public AuthType AuthType { get; set; }

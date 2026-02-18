@@ -1,4 +1,5 @@
 ﻿using Base.Contracts;
+using DTO.v1.Identity;
 
 namespace DTO.v1.Mappers;
 
@@ -20,9 +21,43 @@ public class ProjectMapper : IMapper<DTO.v1.Project, BLL.DTO.Project>
             MinStudents = entity.MinStudents,
             MaxStudents = entity.MaxStudents,
             ProjectTypeId = entity.ProjectTypeId,
+            ProjectType = entity.ProjectType != null ? new ProjectType()
+            {
+                Id = entity.ProjectType.Id,
+                Name = entity.ProjectType.Name,
+            } : null,
             ProjectStatusId = entity.ProjectStatusId,
+            ProjectStatus = entity.ProjectStatus != null ? new ProjectStatus()
+            {
+                Id = entity.ProjectStatus.Id,
+                Name = entity.ProjectStatus.Name,
+            } : null,
             Deadline = entity.Deadline,
             AttachmentsPaths = entity.AttachmentsPaths,
+            Tags = entity.ProjectTags?.Select(pt => new Tag()
+            {
+                Id = pt.TagId,
+                Name = pt.Tag != null ? pt.Tag.Name : "",
+            }).ToList(),
+            Users = entity.UserProjects?.Select(up => new UserProject()
+            {
+                Id = up.Id,
+                UserId = up.UserId,
+                ProjectId = up.ProjectId,
+                User = up.User != null ? new UserInfo()
+                {
+                    Id = up.User.Id,
+                    FirstName = up.User.FirstName,
+                    LastName = up.User.LastName,
+                    Email = up.User.Email,
+                } : null,
+                UserProjectRoleId = up.UserProjectRoleId,
+                UserProjectRole = up.UserProjectRole != null ? new UserProjectRole()
+                {
+                    Id = up.UserProjectRole.Id,
+                    Name = up.UserProjectRole.Name,
+                } : null,
+            }).ToList(),
         };
         
         return result;

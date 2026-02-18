@@ -2,6 +2,7 @@
 using DAL.Contracts;
 using DAL.DTO;
 using DAL.EF.Mappers;
+using Microsoft.EntityFrameworkCore;
 
 namespace DAL.EF.Repositories;
 
@@ -10,7 +11,37 @@ public class ProjectRepository : BaseRepository<Project, Domain.Project>, IProje
     public ProjectRepository(AppDbContext repositoryDbContext) : base(repositoryDbContext, new ProjectUOWMapper())
     {
     }
-    
+
+    public override async Task<IEnumerable<Project>> AllAsync(Guid userId = default)
+    {
+        return (await GetQuery(userId)
+                .Include(p => p.ProjectType)
+                .Include(p => p.ProjectStatus)
+                .Include(p => p.ProjectTags)!
+                    .ThenInclude(pt => pt.Tag)
+                .Include(p => p.UserProjects)!
+                    .ThenInclude(up => up.User)
+                .Include(p => p.UserProjects)!
+                    .ThenInclude(up => up.UserProjectRole)
+                .ToListAsync())
+            .Select(e => Mapper.Map(e)!);
+    }
+
+    public override IEnumerable<Project> All(Guid userId = default)
+    {
+        return GetQuery(userId)
+            .Include(p => p.ProjectType)
+            .Include(p => p.ProjectStatus)
+            .Include(p => p.ProjectTags)!
+                .ThenInclude(pt => pt.Tag)
+            .Include(p => p.UserProjects)!
+            .ThenInclude(up => up.User)
+            .Include(p => p.UserProjects)!
+            .ThenInclude(up => up.UserProjectRole)
+            .ToList()
+            .Select(e => Mapper.Map(e)!);
+    }
+
     // public override Project? Update(Project entity, Guid userId = default)
     // {
     //     var project = RepositoryDbContext.Set<Domain.Project>().FirstOrDefault(c => c.Id == entity.Id);
