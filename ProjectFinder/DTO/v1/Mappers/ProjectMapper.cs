@@ -58,6 +58,7 @@ public class ProjectMapper : IMapper<DTO.v1.Project, BLL.DTO.Project>
                     Name = up.UserProjectRole.Name,
                 } : null,
             }).ToList(),
+            CreatedAt = entity.CreatedAt,
         };
         
         return result;

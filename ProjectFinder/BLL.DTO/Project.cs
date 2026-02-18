@@ -33,6 +33,8 @@ public class Project : IDomainId
     public Guid? PrimarySupervisorId { get; set; }
     public string? PrimarySupervisor { get; set; }
     
+    public DateTime CreatedAt { get; set; }
+    
     public ICollection<ProjectFolder>? ProjectFolders { get; set; }
     public ICollection<ProjectTag>? ProjectTags { get; set; }
     public ICollection<Comment>? Comments { get; set; }

@@ -65,6 +65,7 @@ public class ProjectBLLMapper : IMapper<BLL.DTO.Project, DAL.DTO.Project>
                     Name = up.UserProjectRole.Name,
                 } : null,
             }).ToList(),
+            CreatedAt = entity.CreatedAt,
         };
         
         return result;

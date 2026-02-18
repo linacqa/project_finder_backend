@@ -25,6 +25,8 @@ public class Project : IDomainId
     public DateTime? Deadline { get; set; }
     public List<string> AttachmentsPaths { get; set; } = [];
     
+    public DateTime CreatedAt { get; set; }
+    
     public ICollection<ProjectFolder>? ProjectFolders { get; set; }
     public ICollection<ProjectTag>? ProjectTags { get; set; }
     public ICollection<Comment>? Comments { get; set; }

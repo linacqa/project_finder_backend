@@ -23,4 +23,6 @@ public class Project : IDomainId
     
     public ICollection<Tag>? Tags { get; set; }
     public ICollection<UserProject>? Users { get; set; }
+    
+    public DateTime CreatedAt { get; set; }
 }

@@ -66,6 +66,7 @@ public class ProjectUOWMapper : IMapper<DAL.DTO.Project, Domain.Project>
                     Name = up.UserProjectRole.Name,
                 } : null,
             }).ToList(),
+            CreatedAt = entity.CreatedAt,
         };
     }
 
