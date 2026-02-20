@@ -145,9 +145,10 @@ else
 }
 
 app.UseRouting();
-app.UseAuthorization();
 
 app.UseCors("CorsAllowAll");
+
+app.UseAuthorization();
 
 app.UseSwagger();
 app.UseSwaggerUI(options =>
