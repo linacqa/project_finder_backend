@@ -42,6 +42,38 @@ public class ProjectRepository : BaseRepository<Project, Domain.Project>, IProje
             .Select(e => Mapper.Map(e)!);
     }
 
+    public override async Task<Project?> FindAsync(Guid id, Guid userId = default)
+    {
+        var res = await GetQuery(userId)
+            .Include(p => p.ProjectType)
+            .Include(p => p.ProjectStatus)
+            .Include(p => p.ProjectTags)!
+            .ThenInclude(pt => pt.Tag)
+            .Include(p => p.UserProjects)!
+            .ThenInclude(up => up.User)
+            .Include(p => p.UserProjects)!
+            .ThenInclude(up => up.UserProjectRole)
+            .FirstOrDefaultAsync(e => e.Id.Equals(id));
+        
+        return Mapper.Map(res);
+    }
+
+    public override Project? Find(Guid id, Guid userId = default)
+    {
+        var res = GetQuery(userId)
+            .Include(p => p.ProjectType)
+            .Include(p => p.ProjectStatus)
+            .Include(p => p.ProjectTags)!
+            .ThenInclude(pt => pt.Tag)
+            .Include(p => p.UserProjects)!
+            .ThenInclude(up => up.User)
+            .Include(p => p.UserProjects)!
+            .ThenInclude(up => up.UserProjectRole)
+            .FirstOrDefault(e => e.Id.Equals(id));
+        
+        return Mapper.Map(res);
+    }
+
     // public override Project? Update(Project entity, Guid userId = default)
     // {
     //     var project = RepositoryDbContext.Set<Domain.Project>().FirstOrDefault(c => c.Id == entity.Id);
