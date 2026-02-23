@@ -7,6 +7,7 @@ public class ProjectsSearchRequest
     public int? MaxStudents { get; set; }
     public List<Guid>? TagIds { get; set; }
     public List<Guid>? StatusIds { get; set; }
+    public List<Guid>? ProjectTypeIds { get; set; }
 
     public int Page { get; set; } = 1;
     public int PageSize { get; set; } = 10;

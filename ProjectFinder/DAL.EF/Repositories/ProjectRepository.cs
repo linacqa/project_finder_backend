@@ -45,6 +45,11 @@ public class ProjectRepository : BaseRepository<Project, Domain.Project>, IProje
             query = query.Where(p => request.StatusIds.Contains(p.ProjectStatusId));
         }
 
+        if (request.ProjectTypeIds?.Count > 0)
+        {
+            query = query.Where(p => request.ProjectTypeIds.Contains(p.ProjectTypeId));
+        }
+
         var totalCount = await query.CountAsync();
 
         var data = (await query
