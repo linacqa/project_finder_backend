@@ -8,8 +8,10 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Base.BLL\Base.BLL.csproj" />
+      <ProjectReference Include="..\Base.DTO\Base.DTO.csproj" />
       <ProjectReference Include="..\BLL.Contracts\BLL.Contracts.csproj" />
       <ProjectReference Include="..\DAL.Contracts\DAL.Contracts.csproj" />
+      <ProjectReference Include="..\DTO\DTO.csproj" />
     </ItemGroup>
 
 </Project>

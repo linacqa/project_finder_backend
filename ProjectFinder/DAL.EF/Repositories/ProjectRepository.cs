@@ -1,8 +1,9 @@
 ﻿using Base.DAL.EF;
 using DAL.Contracts;
-using DAL.DTO;
 using DAL.EF.Mappers;
+using DTO.v1;
 using Microsoft.EntityFrameworkCore;
+using Project = DAL.DTO.Project;
 
 namespace DAL.EF.Repositories;
 
@@ -10,6 +11,57 @@ public class ProjectRepository : BaseRepository<Project, Domain.Project>, IProje
 {
     public ProjectRepository(AppDbContext repositoryDbContext) : base(repositoryDbContext, new ProjectUOWMapper())
     {
+    }
+    
+    public async Task<(IEnumerable<Project>, int)> SearchAsync(ProjectsSearchRequest request, Guid userId = default)
+    {
+        var query = GetQuery(userId);
+        
+        if (!string.IsNullOrWhiteSpace(request.Title))
+        {
+            query = query.Where(p =>
+                p.TitleInEstonian.ToLower().Contains(request.Title.ToLower()) 
+                || (p.TitleInEnglish != null 
+                    && p.TitleInEnglish.ToLower().Contains(request.Title.ToLower())));
+        }
+
+        if (request.MinStudents.HasValue)
+        {
+            query = query.Where(p => p.MinStudents >= request.MinStudents.Value);
+        }
+
+        if (request.MaxStudents.HasValue)
+        {
+            query = query.Where(p => p.MinStudents <= request.MaxStudents.Value);
+        }
+
+        if (request.TagIds?.Count > 0)
+        {
+            query = query.Where(p => p.ProjectTags != null && p.ProjectTags.Any(pt => pt.Tag != null && request.TagIds.Contains(pt.Tag.Id)));
+        }
+
+        if (request.StatusIds?.Count > 0)
+        {
+            query = query.Where(p => request.StatusIds.Contains(p.ProjectStatusId));
+        }
+
+        var totalCount = await query.CountAsync();
+
+        var data = (await query
+                .Include(p => p.ProjectType)
+                .Include(p => p.ProjectStatus)
+                .Include(p => p.ProjectTags)!
+                .ThenInclude(pt => pt.Tag)
+                .Include(p => p.UserProjects)!
+                .ThenInclude(up => up.User)
+                .Include(p => p.UserProjects)!
+                .ThenInclude(up => up.UserProjectRole)
+            .Skip((request.Page - 1) * request.PageSize)
+            .Take(request.PageSize)
+            .ToListAsync())
+            .Select(e => Mapper.Map(e)!);
+
+        return (data, totalCount);
     }
 
     public override async Task<IEnumerable<Project>> AllAsync(Guid userId = default)

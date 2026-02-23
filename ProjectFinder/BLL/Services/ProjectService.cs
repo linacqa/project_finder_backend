@@ -1,8 +1,10 @@
 ﻿using Base.BLL;
 using Base.Contracts;
+using Base.DTO;
 using BLL.Contracts;
-using BLL.DTO;
 using DAL.Contracts;
+using DTO.v1;
+using Project = BLL.DTO.Project;
 using ProjectFolder = DAL.DTO.ProjectFolder;
 
 namespace BLL.Services;
@@ -22,6 +24,23 @@ public class ProjectService : BaseService<BLL.DTO.Project, DAL.DTO.Project, DAL.
         _projectTagRepository = serviceUOW.ProjectTagRepository;
         _projectStepRepository = serviceUOW.ProjectStepRepository;
         _userProjectRepository = serviceUOW.UserProjectRepository;
+    }
+    
+    public async Task<PageResult<BLL.DTO.Project>> SearchAsync(ProjectsSearchRequest request, Guid userId = default)
+    {
+        request.Page = request.Page <= 0 ? 1 : request.Page;
+        request.PageSize = request.PageSize > 100 ? 100 : request.PageSize;
+
+        var (entities, totalCount) =
+            await ServiceRepository.SearchAsync(request, userId);
+
+        return new PageResult<BLL.DTO.Project>
+        {
+            Page = request.Page,
+            PageSize = request.PageSize,
+            TotalCount = totalCount,
+            Data = entities.Select(e => Mapper.Map(e)!).ToList()
+        };
     }
     
     public override void Add(BLL.DTO.Project entity, Guid userId = default)

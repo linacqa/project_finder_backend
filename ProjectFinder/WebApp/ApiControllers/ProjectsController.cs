@@ -1,10 +1,12 @@
 using Asp.Versioning;
+using Base.DTO;
 using Base.Helpers;
 using BLL.Contracts;
 using Microsoft.AspNetCore.Mvc;
 using DTO.v1;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace WebApp.ApiControllers
 {
@@ -20,6 +22,27 @@ namespace WebApp.ApiControllers
         public ProjectsController(IAppBLL bll)
         {
             _bll = bll;
+        }
+
+        /// <summary>
+        /// Search projects
+        /// </summary>
+        /// <param name="searchRequest"></param>
+        /// <returns>List of matching projects</returns>
+        [Produces("application/json")]
+        [ProducesResponseType(typeof(PageResult<DTO.v1.Project>), StatusCodes.Status200OK)]
+        [HttpGet("search")]
+        public async Task<ActionResult<PageResult<DTO.v1.Project>>> SearchProjects([FromQuery] ProjectsSearchRequest searchRequest)
+        {
+            var data = (await _bll.ProjectService.SearchAsync(searchRequest));
+
+            return new PageResult<DTO.v1.Project>()
+            {
+                Page = data.Page,
+                PageSize = data.PageSize,
+                TotalCount = data.TotalCount,
+                Data = data.Data.Select(e => _mapper.Map(e)!).ToList(),
+            };
         }
 
         /// <summary>

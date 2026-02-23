@@ -1,9 +1,10 @@
 ﻿using Base.DAL.Contracts;
-using DAL.DTO;
+using DTO.v1;
+using Project = DAL.DTO.Project;
 
 namespace DAL.Contracts;
 
 public interface IProjectRepository : IBaseRepository<Project>
 {
-    
+    Task<(IEnumerable<Project>, int)> SearchAsync(ProjectsSearchRequest request, Guid userId = default);
 }
