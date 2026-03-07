@@ -13,4 +13,10 @@ public class ApplicationService : BaseService<BLL.DTO.Application, DAL.DTO.Appli
         IMapper<Application, DAL.DTO.Application, Guid> mapper) : base(serviceUOW, serviceUOW.ApplicationRepository, mapper)
     {
     }
+
+    public async Task<BLL.DTO.Application?> FindAsyncByProjectId(Guid projectId, Guid userId)
+    {
+        var entity = await ServiceRepository.FindAsyncByProjectId(projectId, userId);
+        return Mapper.Map(entity);
+    }
 }

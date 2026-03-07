@@ -45,7 +45,7 @@ public class ApplicationMapper : IMapper<DTO.v1.Application, BLL.DTO.Application
             Id = Guid.NewGuid(),
             GroupId = entity.GroupId,
             ProjectId = entity.ProjectId,
-            UserId = entity.UserId,
+            // UserId = entity.UserId,
             AcceptedAt = null,
             DeclinedAt = null,
         };
