@@ -13,6 +13,8 @@ public class Group : IDomainId
     public Guid CreatorId { get; set; }
     public AppUser? Creator { get; set; }
     
+    public string? CreatorRoleInGroup { get; set; } = default!;
+    
     public ICollection<Application>? Applications { get; set; }
     public ICollection<Invitation>? Invitations { get; set; }
     public ICollection<UserGroup>? UserGroups { get; set; }

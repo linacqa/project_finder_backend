@@ -14,6 +14,7 @@ public class UserGroupBLLMapper : IMapper<BLL.DTO.UserGroup, DAL.DTO.UserGroup>
             Id = entity.Id,
             GroupId = entity.GroupId,
             UserId = entity.UserId,
+            Role = entity.Role,
         };
         
         return result;
@@ -28,6 +29,7 @@ public class UserGroupBLLMapper : IMapper<BLL.DTO.UserGroup, DAL.DTO.UserGroup>
             Id = entity.Id,
             GroupId = entity.GroupId,
             UserId = entity.UserId,
+            Role = entity.Role,
         };
         
         return result;

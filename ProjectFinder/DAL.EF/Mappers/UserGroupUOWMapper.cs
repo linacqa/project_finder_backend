@@ -39,6 +39,7 @@ public class UserGroupUOWMapper : IMapper<DAL.DTO.UserGroup, Domain.UserGroup>
                     AuthType = entity.Group.User.AuthType,
                 } : null,
             } : null,
+            Role = entity.Role,
         };
     }
 
@@ -74,6 +75,7 @@ public class UserGroupUOWMapper : IMapper<DAL.DTO.UserGroup, Domain.UserGroup>
                     AuthType = entity.Group.Creator.AuthType,
                 } : null,
             } : null,
+            Role = entity.Role,
         };
     }
 }

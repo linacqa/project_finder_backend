@@ -22,9 +22,22 @@ public class GroupUOWMapper : IMapper<DAL.DTO.Group, Domain.Group>
                 Id = entity.User.Id,
                 FirstName = entity.User.FirstName,
                 LastName = entity.User.LastName,
-                AzureObjectId = entity.User.AzureObjectId,
-                AuthType = entity.User.AuthType,
+                Email = entity.User.Email,
             } : null,
+            UserGroups = entity.UserGroups?.Select(ug => new UserGroup()
+            {
+                Id = ug.Id,
+                UserId = ug.UserId,
+                GroupId = ug.GroupId,
+                Role = ug.Role,
+                User = ug.User != null ? new AppUser()
+                {
+                    Id = ug.User.Id,
+                    FirstName = ug.User.FirstName,
+                    LastName = ug.User.LastName,
+                    Email = ug.User.Email,
+                } : null,
+            }).ToList(),
         };
     }
 

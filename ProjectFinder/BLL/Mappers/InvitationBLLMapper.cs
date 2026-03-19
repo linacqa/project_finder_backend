@@ -18,6 +18,7 @@ public class InvitationBLLMapper : IMapper<BLL.DTO.Invitation, DAL.DTO.Invitatio
             ToUserId = entity.ToUserId,
             AcceptedAt = entity.AcceptedAt,
             DeclinedAt = entity.DeclinedAt,
+            Role = entity.Role,
         };
         
         return result;
@@ -36,6 +37,7 @@ public class InvitationBLLMapper : IMapper<BLL.DTO.Invitation, DAL.DTO.Invitatio
             ToUserId = entity.ToUserId,
             AcceptedAt = entity.AcceptedAt,
             DeclinedAt = entity.DeclinedAt,
+            Role = entity.Role,
         };
         
         return result;

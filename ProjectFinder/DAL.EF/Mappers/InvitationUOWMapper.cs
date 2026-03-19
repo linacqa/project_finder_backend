@@ -76,6 +76,7 @@ public class InvitationUOWMapper : IMapper<DAL.DTO.Invitation, Domain.Invitation
             } : null,
             AcceptedAt = entity.AcceptedAt,
             DeclinedAt = entity.DeclinedAt,
+            Role = entity.Role,
         };
     }
 
@@ -148,6 +149,7 @@ public class InvitationUOWMapper : IMapper<DAL.DTO.Invitation, Domain.Invitation
             } : null,
             AcceptedAt = entity.AcceptedAt,
             DeclinedAt = entity.DeclinedAt,
+            Role = entity.Role,
         };
     }
 }

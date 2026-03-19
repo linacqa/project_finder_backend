@@ -12,4 +12,6 @@ public class UserGroup : IDomainId
     
     public Guid GroupId { get; set; }
     public Group? Group { get; set; }
+    
+    public string? Role { get; set; } = default!;
 }
