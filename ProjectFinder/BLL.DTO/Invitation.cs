@@ -10,8 +10,8 @@ public class Invitation : IDomainId
     public Guid GroupId { get; set; }
     public Group? Group { get; set; }
     
-    public Guid ProjectId { get; set; }
-    public Project? Project { get; set; }
+    // public Guid ProjectId { get; set; }
+    // public Project? Project { get; set; }
     
     public Guid ToUserId { get; set; }
     public AppUser? ToUser { get; set; }

@@ -68,5 +68,29 @@ namespace WebApp.ApiControllers
                 UniId = u.UniId
             }));
         }
+
+        /// <summary>
+        /// Get all students
+        /// </summary>
+        /// <returns>List of students</returns>
+        [Produces("application/json")]
+        [ProducesResponseType(typeof(IEnumerable<DTO.v1.Identity.StudentInfo>), StatusCodes.Status200OK)]
+        [HttpGet("Students")]
+        public async Task<ActionResult<IEnumerable<DTO.v1.Identity.StudentInfo>>> GetStudents()
+        {
+            var appUsers = await _context.Users
+                .Where(u => u.UserRoles.Any(ur => ur.Role.Name.Equals("student")))
+                .ToListAsync();
+            
+            return Ok(appUsers.Select(u => new StudentInfo()
+            {
+                Id = u.Id,
+                Email = u.Email,
+                FirstName = u.FirstName,
+                LastName = u.LastName,
+                PhoneNumber = u.PhoneNumber,
+                UniId = u.UniId
+            }));
+        }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Base.Contracts;
+using DTO.v1.Identity;
 
 namespace DTO.v1;
 
@@ -8,11 +9,17 @@ public class Invitation : IDomainId
     
     public Guid GroupId { get; set; }
     
-    public Guid ProjectId { get; set; }
+    public Group? Group { get; set; }
+    
+    // public Guid ProjectId { get; set; }
     
     public Guid ToUserId { get; set; }
     
+    public StudentInfo? ToUser { get; set; }
+    
     public Guid FromUserId { get; set; }
+    
+    public StudentInfo? FromUser { get; set; }
     
     public string Role { get; set; } = default!;
     

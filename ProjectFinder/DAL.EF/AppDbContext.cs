@@ -95,9 +95,9 @@ public class AppDbContext : IdentityDbContext<AppUser, AppRole, Guid, IdentityUs
         
         
         builder.Entity<Invitation>()
-            .HasOne(i => i.FromUser)
+            .HasOne(i => i.ToUser)
             .WithMany(u => u.OutgoingInvitations)
-            .HasForeignKey(i => i.FromUserId)
+            .HasForeignKey(i => i.ToUserId)
             .OnDelete(DeleteBehavior.Restrict);
 
         builder.Entity<Invitation>()
