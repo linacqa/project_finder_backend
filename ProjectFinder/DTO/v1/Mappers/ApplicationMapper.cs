@@ -12,8 +12,29 @@ public class ApplicationMapper : IMapper<DTO.v1.Application, BLL.DTO.Application
         {
             Id = entity.Id,
             GroupId = entity.GroupId,
+            Group = entity.Group == null ? null : new Group()
+            {
+                Id = entity.Group.Id,
+                Name = entity.Group.Name,
+                IsAzureAdGroup = entity.Group.IsAzureAdGroup,
+                CreatorId = entity.Group.CreatorId,
+                Creator = entity.Group.Creator == null ? null : new Identity.UserInfo()
+                {
+                    Id = entity.Group.Creator.Id,
+                    FirstName = entity.Group.Creator.FirstName,
+                    LastName = entity.Group.Creator.LastName,
+                    Email = entity.Group.Creator.Email,
+                },
+            },
             ProjectId = entity.ProjectId,
             UserId = entity.UserId,
+            User = entity.User == null ? null : new Identity.UserInfo()
+            {
+                Id = entity.User.Id,
+                FirstName = entity.User.FirstName,
+                LastName = entity.User.LastName,
+                Email = entity.User.Email,
+            },
             AcceptedAt = entity.AcceptedAt,
             DeclinedAt = entity.DeclinedAt,
         };

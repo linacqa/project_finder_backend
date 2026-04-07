@@ -33,7 +33,31 @@ namespace WebApp.ApiControllers
             
             return data.Select(d => _mapper.Map(d)!).ToList();
         }
+        
+        /// <summary>
+        /// Get current user's groups that match the project's team size
+        /// </summary>
+        /// <param name="projectId">Project ID</param>
+        /// <returns>List of matching groups</returns>
+        [Produces("application/json")]
+        [ProducesResponseType(typeof(IEnumerable<DTO.v1.Group>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [HttpGet("matchingProjectTeamSize/{projectId}")]
+        public async Task<ActionResult<IEnumerable<DTO.v1.Group>>> GetUserGroupsMatchingProjectTeamSize(Guid projectId)
+        {
+            var userId = User.GetUserId();
+            var project = await _bll.ProjectService.FindAsync(projectId);
 
+            if (project == null)
+            {
+                return NotFound();
+            }
+            
+            var data = await _bll.GroupService.AllAsyncMatchingTeamSize(project.MinStudents, project.MaxStudents, userId);
+
+            return data.Select(g => _mapper.Map(g)!).ToList();
+        }
+        
         /// <summary>
         /// Get a single group by id
         /// </summary>

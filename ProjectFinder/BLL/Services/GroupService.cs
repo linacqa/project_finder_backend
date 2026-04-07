@@ -17,6 +17,12 @@ public class GroupService : BaseService<BLL.DTO.Group, DAL.DTO.Group, DAL.Contra
         _userGroupRepository = serviceUOW.UserGroupRepository;
     }
     
+    public async Task<IEnumerable<BLL.DTO.Group>> AllAsyncMatchingTeamSize(int minStudents, int maxStudents, Guid userId = default)
+    {
+        var groups = await ServiceRepository.AllAsyncMatchingTeamSize(minStudents, maxStudents, userId);
+        return groups.Select(g => Mapper.Map(g)!);
+    }
+    
     public override void Add(BLL.DTO.Group entity, Guid userId = default)
     {
         var creatorRoleInGroup = entity.CreatorRoleInGroup;

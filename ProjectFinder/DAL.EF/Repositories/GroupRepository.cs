@@ -32,6 +32,18 @@ public class GroupRepository : BaseRepository<Group, Domain.Group>, IGroupReposi
             .Select(e => Mapper.Map(e)!);
     }
 
+    public async Task<IEnumerable<Group>> AllAsyncMatchingTeamSize(int minStudents, int maxStudents,
+        Guid userId = default)
+    {
+        return (await GetQuery(userId)
+                .Where(e => !e.IsAzureAdGroup)
+                .Include(e => e.UserGroups)!
+                    .ThenInclude(u => u.User)
+                .Where(e => e.UserGroups != null && e.UserGroups.Count() >= minStudents && e.UserGroups.Count() <= maxStudents)
+                .ToListAsync())
+            .Select(e => Mapper.Map(e)!);
+    }
+
     public override Group? Find(Guid id, Guid userId = default)
     {
         var query = GetQuery(userId)

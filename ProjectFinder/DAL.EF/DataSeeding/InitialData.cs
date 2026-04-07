@@ -36,9 +36,9 @@ public static class InitialData
 
     public static readonly (string name, Guid? id)[] ProjectTypes =
     [
-        ("Final Thesis", Guid.Parse("00000000-0000-0000-0000-000000000001")),
-        ("Internship", Guid.Parse("00000000-0000-0000-0000-000000000002")),
-        ("Final Thesis + Internship", Guid.Parse("00000000-0000-0000-0000-000000000003")),
+        ("Lõputöö", Guid.Parse("00000000-0000-0000-0000-000000000001")),
+        ("Praktika projekt", Guid.Parse("00000000-0000-0000-0000-000000000002")),
+        ("Praktika projekt + Lõputöö", Guid.Parse("00000000-0000-0000-0000-000000000003")),
     ];
 
     public static readonly (string name, Guid? id)[] ProjectStatuses =
