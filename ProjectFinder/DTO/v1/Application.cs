@@ -14,6 +14,7 @@ public class Application : IDomainId
     public Group? Group { get; set; }
     
     public Guid ProjectId { get; set; }
+    public Project? Project { get; set; }
     
     public DateTime? AcceptedAt { get; set; }
     public DateTime? DeclinedAt { get; set; }

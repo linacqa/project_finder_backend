@@ -230,10 +230,6 @@ public class AccountController : ControllerBase
                 .ExecuteDeleteAsync();
             _logger.LogInformation("Deleted {} refresh tokens", deletedRows);
         }
-        else
-        {
-            //TODO: inMemory delete for testing
-        }
 
         var refreshToken = new AppRefreshToken()
         {

@@ -5,5 +5,5 @@ namespace DAL.Contracts;
 
 public interface IUserGroupRepository : IBaseRepository<UserGroup>
 {
-    
+    bool UserInGroup(Guid userId, Guid groupId);
 }

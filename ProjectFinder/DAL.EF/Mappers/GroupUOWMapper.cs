@@ -51,14 +51,6 @@ public class GroupUOWMapper : IMapper<DAL.DTO.Group, Domain.Group>
             Name = entity.Name,
             IsAzureAdGroup =  entity.IsAzureAdGroup,
             UserId = entity.CreatorId,
-            User = entity.Creator != null ? new Domain.Identity.AppUser()
-            {
-                Id = entity.Creator.Id,
-                FirstName = entity.Creator.FirstName,
-                LastName = entity.Creator.LastName,
-                AzureObjectId = entity.Creator.AzureObjectId,
-                AuthType = entity.Creator.AuthType,
-            } : null,
         };
     }
 }

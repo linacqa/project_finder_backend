@@ -94,6 +94,7 @@ builder.Services.AddAuthentication(options =>
 builder.Services.AddControllers();
 builder.Services.AddScoped<IUserNameResolver, UserNameResolver>();
 
+// TODO: change before production
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("CorsAllowAll", policy =>

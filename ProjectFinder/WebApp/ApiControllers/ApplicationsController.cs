@@ -22,19 +22,20 @@ namespace WebApp.ApiControllers
             _bll = bll;
         }
 
-        // /// <summary>
-        // /// Get all applications
-        // /// </summary>
-        // /// <returns>List of applications</returns>
-        // [Produces("application/json")]
-        // [ProducesResponseType(typeof(IEnumerable<DTO.v1.Application>), StatusCodes.Status200OK)]
-        // [HttpGet]
-        // public async Task<ActionResult<IEnumerable<DTO.v1.Application>>> GetApplications()
-        // {
-        //     var data = (await _bll.ApplicationService.AllAsync()).ToList();
-        //     
-        //     return data.Select(d => _mapper.Map(d)!).ToList();
-        // }
+        /// <summary>
+        /// Get all applications
+        /// </summary>
+        /// <returns>List of applications</returns>
+        [Authorize(Roles = "admin", AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [Produces("application/json")]
+        [ProducesResponseType(typeof(IEnumerable<DTO.v1.Application>), StatusCodes.Status200OK)]
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<DTO.v1.Application>>> GetApplications()
+        {
+            var data = (await _bll.ApplicationService.AllAsync()).ToList();
+            
+            return data.Select(d => _mapper.Map(d)!).ToList();
+        }
 
         /// <summary>
         /// Get all current user's applications
@@ -42,7 +43,7 @@ namespace WebApp.ApiControllers
         /// <returns>List of all current user's applications</returns>
         [Produces("application/json")]
         [ProducesResponseType(typeof(IEnumerable<DTO.v1.Application>), StatusCodes.Status200OK)]
-        [HttpGet]
+        [HttpGet("my")]
         public async Task<ActionResult<IEnumerable<DTO.v1.Application>>> GetCurrentUsersApplications()
         {
             var data = (await _bll.ApplicationService.AllAsync(User.GetUserId())).ToList();
@@ -121,6 +122,54 @@ namespace WebApp.ApiControllers
                 id = bllApplication.Id,
                 version = HttpContext.GetRequestedApiVersion()!.ToString()
             }, _mapper.Map(bllApplication)!);
+        }
+        
+        /// <summary>
+        /// Accept the application (admin)
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [Authorize(Roles = "admin", AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [HttpPut("{id}/accept")]
+        public async Task<IActionResult> AcceptApplication(Guid id)
+        {
+            var application = await _bll.ApplicationService.FindAsync(id);
+            if (application == null)
+            {
+                return NotFound();
+            }
+            application.AcceptedAt = DateTime.UtcNow;
+            application.DeclinedAt = null;
+            await _bll.ApplicationService.UpdateAsync(application, User.GetUserId());
+            await _bll.SaveChangesAsync();
+            return NoContent();
+        }
+
+        /// <summary>
+        /// Decline the application (admin)
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [Authorize(Roles = "admin", AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [HttpPut("{id}/decline")]
+        public async Task<IActionResult> DeclineApplication(Guid id)
+        {
+            var application = await _bll.ApplicationService.FindAsync(id);
+            if (application == null)
+            {
+                return NotFound();
+            }
+            application.DeclinedAt = DateTime.UtcNow;
+            application.AcceptedAt = null;
+            await _bll.ApplicationService.UpdateAsync(application, User.GetUserId());
+            await _bll.SaveChangesAsync();
+            return NoContent();
         }
         
         // /// <summary>

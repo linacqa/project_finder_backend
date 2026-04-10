@@ -14,7 +14,6 @@ public abstract class BaseUserRole<TKey, TUser, TRole> : IdentityUserRole<TKey> 
     where TUser : class //BaseUser<TKey, BaseUserRole<TKey, TUser, TRole>>
     where TRole : class //BaseRole<TKey, BaseUserRole<TKey, TUser, TRole>>
 {
-    // TODO - this causes problems with Role manager
     //public TKey Id { get; set; } = default!;
 
     public TUser? User { get; set; }

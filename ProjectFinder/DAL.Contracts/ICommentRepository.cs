@@ -5,5 +5,5 @@ namespace DAL.Contracts;
 
 public interface ICommentRepository : IBaseRepository<Comment>
 {
-    
+    Task<IEnumerable<DAL.DTO.Comment>> AllAsyncByProjectId(Guid projectId, Guid userId);
 }

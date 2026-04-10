@@ -73,15 +73,19 @@ namespace WebApp.ApiControllers
             {
                 return NotFound();
             }
-            // TODO: move check to other layer
-            if (invitation.ToUserId != User.GetUserId())
-            {
-                return Unauthorized();
-            }
+
             invitation.AcceptedAt = DateTime.UtcNow;
             invitation.DeclinedAt = null;
-            await _bll.InvitationService.UpdateAsync(invitation, User.GetUserId());
-            await _bll.SaveChangesAsync();
+            
+            try
+            {
+                await _bll.InvitationService.UpdateAsync(invitation, User.GetUserId());
+                await _bll.SaveChangesAsync();
+            }
+            catch (UnauthorizedAccessException e)
+            {
+                return Unauthorized(e.Message);
+            }
             return NoContent();
         }
 
@@ -101,15 +105,20 @@ namespace WebApp.ApiControllers
             {
                 return NotFound();
             }
-            // TODO: move check to other layer
-            if (invitation.ToUserId != User.GetUserId())
-            {
-                return Unauthorized();
-            }
+
             invitation.DeclinedAt = DateTime.UtcNow;
             invitation.AcceptedAt = null;
-            await _bll.InvitationService.UpdateAsync(invitation, User.GetUserId());
-            await _bll.SaveChangesAsync();
+            
+            try
+            {
+                await _bll.InvitationService.UpdateAsync(invitation, User.GetUserId());
+                await _bll.SaveChangesAsync();
+            }
+            catch (UnauthorizedAccessException e)
+            {
+                return Unauthorized(e.Message);
+            }
+            
             return NoContent();
         }
         
@@ -154,6 +163,7 @@ namespace WebApp.ApiControllers
         /// <returns></returns>
         [Consumes("application/json")]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(DTO.v1.Invitation), StatusCodes.Status200OK)]
         [HttpPost]
@@ -163,12 +173,16 @@ namespace WebApp.ApiControllers
         
             try
             {
-                // TODO: check that the invitable user is not already a member of group
                 _bll.InvitationService.Add(bllInvitation, User.GetUserId());
                 await _bll.SaveChangesAsync();
-            } catch (UnauthorizedAccessException e)
+            }
+            catch (UnauthorizedAccessException e)
             {
                 return Unauthorized(e.Message);
+            }
+            catch (InvalidOperationException e)
+            {
+                return BadRequest(e.Message);
             }
             
             return CreatedAtAction("GetInvitation", new

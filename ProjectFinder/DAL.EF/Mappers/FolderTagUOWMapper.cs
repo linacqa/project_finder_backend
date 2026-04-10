@@ -35,17 +35,7 @@ public class FolderTagUOWMapper : IMapper<DAL.DTO.FolderTag, Domain.FolderTag>
         {
             Id = entity.Id,
             FolderId = entity.FolderId,
-            Folder = entity.Folder != null ? new Domain.Folder()
-            {
-                Id = entity.Folder.Id,
-                Name = entity.Folder.Name,
-            } : null,
             TagId = entity.TagId,
-            Tag = entity.Tag != null ? new Domain.Tag()
-            {
-                Id = entity.Tag.Id,
-                Name = entity.Tag.Name,
-            } : null,
         };
     }
 }

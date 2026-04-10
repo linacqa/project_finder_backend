@@ -15,6 +15,9 @@ public class ProjectService : BaseService<BLL.DTO.Project, DAL.DTO.Project, DAL.
     private readonly IProjectTagRepository _projectTagRepository;
     private readonly IProjectStepRepository _projectStepRepository;
     private readonly IUserProjectRepository _userProjectRepository;
+    private readonly IFolderRepository _folderRepository;
+    private readonly ITagRepository _tagRepository;
+    private readonly IStepRepository _stepRepository;
 
     public ProjectService(
         IAppUOW serviceUOW, 
@@ -24,6 +27,9 @@ public class ProjectService : BaseService<BLL.DTO.Project, DAL.DTO.Project, DAL.
         _projectTagRepository = serviceUOW.ProjectTagRepository;
         _projectStepRepository = serviceUOW.ProjectStepRepository;
         _userProjectRepository = serviceUOW.UserProjectRepository;
+        _folderRepository = serviceUOW.FolderRepository;
+        _tagRepository = serviceUOW.TagRepository;
+        _stepRepository = serviceUOW.StepRepository;
     }
     
     public async Task<PageResult<BLL.DTO.Project>> SearchAsync(ProjectsSearchRequest request, Guid userId = default)
@@ -48,7 +54,40 @@ public class ProjectService : BaseService<BLL.DTO.Project, DAL.DTO.Project, DAL.
         var dalEntity = Mapper.Map(entity);
         ServiceRepository.Add(dalEntity!, userId);
         
-        // TODO: check for existence of entities with such ids before adding
+        // Check for existence of entities with such ids before adding
+        
+        if (entity.FolderIds.Count > 0)
+        {
+            foreach (var folderId in entity.FolderIds)
+            {
+                if (!_folderRepository.Exists(folderId))
+                {
+                    throw new ArgumentException($"Folder with id {folderId} does not exist.");
+                }
+            }
+        }
+        
+        if (entity.TagIds.Count > 0) 
+        {
+            foreach (var tagId in entity.TagIds)
+            {
+                if (!_tagRepository.Exists(tagId))
+                {
+                    throw new ArgumentException($"Tag with id {tagId} does not exist.");
+                }
+            }
+        }
+        
+        if (entity.StepIds.Count > 0)
+        {
+            foreach (var stepId in entity.StepIds)
+            {
+                if (!_stepRepository.Exists(stepId))
+                {
+                    throw new ArgumentException($"Step with id {stepId} does not exist.");
+                }
+            }
+        }
         
         if (entity.FolderIds.Count > 0)
         {

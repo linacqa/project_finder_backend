@@ -74,15 +74,6 @@ public class AppDbContext : IdentityDbContext<AppUser, AppRole, Guid, IdentityUs
             relationship.DeleteBehavior = DeleteBehavior.Restrict;
         }
 
-        /*
-        // TODO - adding primary key to AppUserRole causes issues with RoleManager
-        // We have custom UserRole - with separate PK and navigation for Role and User
-        // override default Identity EF config
-        builder.Entity<AppUserRole>().HasKey(a => new { a.UserId, a.RoleId });
-        builder.Entity<AppUserRole>().HasAlternateKey(a => a.Id);
-        builder.Entity<AppUserRole>().HasIndex(a => new { a.UserId, a.RoleId }).IsUnique();
-        */
-            
         builder.Entity<AppUserRole>()
             .HasOne(a => a.User)
             .WithMany(u => u.UserRoles)

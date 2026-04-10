@@ -46,9 +46,10 @@ namespace WebApp.ApiControllers
         }
 
         /// <summary>
-        /// Get all supervisors
+        /// Get all supervisors (admin)
         /// </summary>
         /// <returns>List of supervisors</returns>
+        [Authorize(Roles = "admin", AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [Produces("application/json")]
         [ProducesResponseType(typeof(IEnumerable<DTO.v1.Identity.SupervisorInfo>), StatusCodes.Status200OK)]
         [HttpGet("Supervisors")]

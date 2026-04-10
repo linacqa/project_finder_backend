@@ -11,7 +11,10 @@ public class ProjectStep : IDomainId
     public Project? Project { get; set; }
     
     public Guid StepId { get; set; }
+    public Step? Step { get; set; }
     
     public Guid StepStatusId { get; set; }
+    public StepStatus? StepStatus { get; set; }
+    
     public int Order { get; set; }
 }

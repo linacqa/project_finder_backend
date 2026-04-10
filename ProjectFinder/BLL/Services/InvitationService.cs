@@ -23,8 +23,24 @@ public class InvitationService : BaseService<BLL.DTO.Invitation, DAL.DTO.Invitat
         return entities.Select(e => Mapper.Map(e)!).ToList(); 
     }
     
+    public override void Add(BLL.DTO.Invitation entity, Guid userId = default)
+    {
+        if (_userGroupRepository.UserInGroup(entity.ToUserId, entity.GroupId))
+        {
+            throw new InvalidOperationException("Invitable user is already a member of this group.");
+        }
+        
+        var dalEntity = Mapper.Map(entity);
+        ServiceRepository.Add(dalEntity!, userId);
+    }
+    
     public override async Task<BLL.DTO.Invitation?> UpdateAsync(BLL.DTO.Invitation entity, Guid userId = default)
     {
+        if (entity.ToUserId != userId)
+        {
+            throw new UnauthorizedAccessException("You can only accept/decline your own invitations.");
+        }
+        
         var dalEntity = Mapper.Map(entity);
         var updatedEntity = await ServiceRepository.UpdateAsync(dalEntity!, userId);
         if (updatedEntity.AcceptedAt != null)

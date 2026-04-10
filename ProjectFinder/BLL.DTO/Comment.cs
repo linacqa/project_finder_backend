@@ -18,5 +18,7 @@ public class Comment : IDomainId
     
     public string Content { get; set; } = default!;
     
+    public DateTime CreatedAt { get; set; }
+    
     public ICollection<Comment>? Replies { get; set; }
 }

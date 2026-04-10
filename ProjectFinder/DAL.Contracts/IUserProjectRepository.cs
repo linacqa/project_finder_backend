@@ -5,5 +5,5 @@ namespace DAL.Contracts;
 
 public interface IUserProjectRepository : IBaseRepository<UserProject>
 {
-    
+    public Task<bool> UserInProject(Guid projectId, Guid userId);
 }

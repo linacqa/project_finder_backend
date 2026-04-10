@@ -27,6 +27,12 @@ public class ApplicationMapper : IMapper<DTO.v1.Application, BLL.DTO.Application
                 },
             },
             ProjectId = entity.ProjectId,
+            Project = entity.Project != null ? new Project()
+            {
+                Id = entity.Project.Id,
+                TitleInEstonian = entity.Project.TitleInEstonian,
+                TitleInEnglish = entity.Project.TitleInEnglish,
+            } : null,
             UserId = entity.UserId,
             User = entity.User == null ? null : new Identity.UserInfo()
             {

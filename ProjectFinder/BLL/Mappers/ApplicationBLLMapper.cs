@@ -29,6 +29,12 @@ public class ApplicationBLLMapper : IMapper<BLL.DTO.Application, DAL.DTO.Applica
                 },
             },
             ProjectId = entity.ProjectId,
+            Project = entity.Project != null ? new Project()
+            {
+                Id = entity.Project.Id,
+                TitleInEstonian = entity.Project.TitleInEstonian,
+                TitleInEnglish = entity.Project.TitleInEnglish,
+            } : null,
             UserId = entity.UserId,
             User = entity.User == null ? null : new AppUser()
             {
