@@ -37,6 +37,21 @@ namespace WebApp.ApiControllers
         // }
         
         /// <summary>
+        /// Get all projectSteps by projectId
+        /// </summary>
+        /// <param name="projectId"></param>
+        /// <returns>List of projectSteps</returns>
+        [Produces("application/json")]
+        [ProducesResponseType(typeof(IEnumerable<DTO.v1.ProjectStep>), StatusCodes.Status200OK)]
+        [HttpGet("project/{projectId}")]
+        public async Task<ActionResult<IEnumerable<DTO.v1.ProjectStep>>> GetProjectStepsByProjectId(Guid projectId)
+        {
+            var data = (await _bll.ProjectStepService.AllAsyncByProjectId(projectId, User.GetUserId())).ToList();
+            
+            return data.Select(d => _mapper.Map(d)!).ToList();
+        }
+        
+        /// <summary>
         /// Get a single projectStep by id
         /// </summary>
         /// <param name="id"></param>
@@ -69,7 +84,7 @@ namespace WebApp.ApiControllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [HttpPatch("{id}/status")]
+        [HttpPut("{id}/status")]
         public async Task<IActionResult> UpdateProjectStepStatus(Guid id, ProjectStepCreateUpdate projectStep)
         {
             var projectStepFound = await _bll.ProjectStepService.FindAsync(id);

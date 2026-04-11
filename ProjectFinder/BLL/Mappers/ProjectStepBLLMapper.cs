@@ -14,7 +14,17 @@ public class ProjectStepBLLMapper : IMapper<BLL.DTO.ProjectStep, DAL.DTO.Project
             Id = entity.Id,
             ProjectId = entity.ProjectId,
             StepId = entity.StepId,
+            Step = entity.Step != null ? new Step()
+            {
+                Id = entity.Step.Id,
+                Name = entity.Step.Name,
+            } : null,
             StepStatusId = entity.StepStatusId,
+            StepStatus = entity.StepStatus != null ? new StepStatus()
+            {
+                Id = entity.StepStatus.Id,
+                Name = entity.StepStatus.Name,
+            } : null,
             Order = entity.Order,
         };
         

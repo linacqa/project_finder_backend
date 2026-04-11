@@ -17,6 +17,19 @@ public class ProjectStepService : BaseService<BLL.DTO.ProjectStep, DAL.DTO.Proje
         _userProjectRepository = serviceUOW.UserProjectRepository;
     }
     
+    public async Task<IEnumerable<BLL.DTO.ProjectStep>> AllAsyncByProjectId(Guid projectId, Guid userId)
+    {
+        var userInProject = await _userProjectRepository.UserInProject(projectId, userId);
+        
+        if (!userInProject)
+        {
+            throw new UnauthorizedAccessException("User is not part of the project.");
+        }
+        
+        var entities = await ServiceRepository.AllAsyncByProjectId(projectId, userId);
+        return entities.Select(e => Mapper.Map(e)!).ToList();
+    }
+    
     public override async Task<BLL.DTO.ProjectStep?> UpdateAsync(BLL.DTO.ProjectStep entity, Guid userId = default)
     {
         var userInProject = await _userProjectRepository.UserInProject(entity.ProjectId, userId);
