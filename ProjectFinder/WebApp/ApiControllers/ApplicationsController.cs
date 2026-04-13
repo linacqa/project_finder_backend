@@ -101,8 +101,8 @@ namespace WebApp.ApiControllers
         [Authorize(Roles = "student", AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [Consumes("application/json")]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(StatusCodes.Status201Created)]
-        [ProducesResponseType(typeof(DTO.v1.Application), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(DTO.v1.Application), StatusCodes.Status201Created)]
+        // [ProducesResponseType(typeof(DTO.v1.Application), StatusCodes.Status200OK)]
         [HttpPost]
         public async Task<ActionResult<DTO.v1.Application>> PostApplication(ApplicationCreate application)
         {

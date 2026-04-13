@@ -27,9 +27,12 @@ public class RegisterInfo
     [MaxLength(64)]
     public string Role { get; set; } = "user";
 
+    [MaxLength(16)]
     public string? UniId { get; set; }
     
+    [MaxLength(16)]
     public string? MatriculationNumber { get; set; }
     
+    [MaxLength(128)]
     public string? Program { get; set; }
 }

@@ -121,8 +121,8 @@ namespace WebApp.ApiControllers
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [Consumes("application/json")]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(StatusCodes.Status201Created)]
-        [ProducesResponseType(typeof(DTO.v1.Comment), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(DTO.v1.Comment), StatusCodes.Status201Created)]
+        // [ProducesResponseType(typeof(DTO.v1.Comment), StatusCodes.Status200OK)]
         [HttpPost]
         public async Task<ActionResult<DTO.v1.Comment>> PostComment(CommentCreateUpdate comment)
         {

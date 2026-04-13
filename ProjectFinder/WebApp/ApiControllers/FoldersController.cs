@@ -98,8 +98,8 @@ namespace WebApp.ApiControllers
         [Authorize(Roles = "admin", AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [Consumes("application/json")]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(StatusCodes.Status201Created)]
-        [ProducesResponseType(typeof(DTO.v1.Folder), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(DTO.v1.Folder), StatusCodes.Status201Created)]
+        // [ProducesResponseType(typeof(DTO.v1.Folder), StatusCodes.Status200OK)]
         [HttpPost]
         public async Task<ActionResult<DTO.v1.Folder>> PostFolder(FolderCreate folder)
         {

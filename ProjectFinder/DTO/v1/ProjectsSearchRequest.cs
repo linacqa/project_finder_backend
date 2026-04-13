@@ -1,7 +1,10 @@
-﻿namespace DTO.v1;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace DTO.v1;
 
 public class ProjectsSearchRequest
 {
+    [MaxLength(64)]
     public string? Title { get; set; }
     public int? MinStudents { get; set; }
     public int? MaxStudents { get; set; }

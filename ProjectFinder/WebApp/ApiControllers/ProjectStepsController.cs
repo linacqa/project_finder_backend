@@ -46,9 +46,14 @@ namespace WebApp.ApiControllers
         [HttpGet("project/{projectId}")]
         public async Task<ActionResult<IEnumerable<DTO.v1.ProjectStep>>> GetProjectStepsByProjectId(Guid projectId)
         {
-            var data = (await _bll.ProjectStepService.AllAsyncByProjectId(projectId, User.GetUserId())).ToList();
-            
-            return data.Select(d => _mapper.Map(d)!).ToList();
+            try
+            {
+                var data = (await _bll.ProjectStepService.AllAsyncByProjectId(projectId, User.GetUserId())).ToList();
+                return data.Select(d => _mapper.Map(d)!).ToList();
+            } catch (UnauthorizedAccessException e)
+            {
+                return Unauthorized(e.Message);
+            }
         }
         
         /// <summary>

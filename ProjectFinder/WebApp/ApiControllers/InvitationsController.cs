@@ -164,8 +164,8 @@ namespace WebApp.ApiControllers
         [Consumes("application/json")]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status201Created)]
-        [ProducesResponseType(typeof(DTO.v1.Invitation), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(DTO.v1.Invitation), StatusCodes.Status201Created)]
+        // [ProducesResponseType(typeof(DTO.v1.Invitation), StatusCodes.Status200OK)]
         [HttpPost]
         public async Task<ActionResult<DTO.v1.Invitation>> PostInvitation(InvitationCreate invitation)
         {

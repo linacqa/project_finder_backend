@@ -90,7 +90,9 @@ namespace WebApp.ApiControllers
                 FirstName = u.FirstName,
                 LastName = u.LastName,
                 PhoneNumber = u.PhoneNumber,
-                UniId = u.UniId
+                UniId = u.UniId,
+                MatriculationNumber = u.MatriculationNumber,
+                Program = u.Program
             }));
         }
     }
