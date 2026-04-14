@@ -135,6 +135,9 @@ namespace WebApp.ApiControllers
             } catch (UnauthorizedAccessException e)
             {
                 return Unauthorized(e.Message);
+            } catch (ArgumentException e)
+            {
+                return BadRequest(e.Message);
             }
             
             return CreatedAtAction("GetProject", new

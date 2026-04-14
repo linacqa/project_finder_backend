@@ -27,12 +27,12 @@ public class ProjectRepository : BaseRepository<Project, Domain.Project>, IProje
 
         if (request.MinStudents.HasValue)
         {
-            query = query.Where(p => p.MinStudents >= request.MinStudents.Value);
+            query = query.Where(p => p.MinStudents <= request.MinStudents.Value && p.MaxStudents >= request.MinStudents.Value);
         }
 
         if (request.MaxStudents.HasValue)
         {
-            query = query.Where(p => p.MinStudents <= request.MaxStudents.Value);
+            query = query.Where(p => p.MaxStudents <= request.MaxStudents.Value);
         }
 
         if (request.TagIds?.Count > 0)
