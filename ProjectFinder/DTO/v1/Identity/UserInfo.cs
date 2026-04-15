@@ -9,5 +9,7 @@ public class UserInfo : IDomainId
     public string? PhoneNumber { get; set; }
     public string FirstName { get; set; } = default!;
     public string LastName { get; set; } = default!;
+
+    public string Role { get; set; } = default!;
     // public string? UniId { get; set; }
 }

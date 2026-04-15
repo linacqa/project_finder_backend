@@ -1,9 +1,12 @@
-﻿using Asp.Versioning;
+﻿using System.Net;
+using Asp.Versioning;
 using BLL.Contracts;
 using DAL.EF;
+using Domain.Identity;
 using DTO.v1.Identity;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,10 +18,12 @@ namespace WebApp.ApiControllers
     public class UsersController : ControllerBase
     {
         private readonly AppDbContext _context;
+        private readonly UserManager<AppUser> _userManager;
         
-        public UsersController(AppDbContext context)
+        public UsersController(AppDbContext context, UserManager<AppUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
         
         /// <summary>
@@ -32,6 +37,8 @@ namespace WebApp.ApiControllers
         public async Task<ActionResult<IEnumerable<DTO.v1.Identity.UserInfo>>> GetUsers()
         {
             var appUsers = await _context.Users
+                .Include(u => u.UserRoles)
+                .ThenInclude(ur => ur.Role)
                 .ToListAsync();
             
             return Ok(appUsers.Select(u => new UserInfo()
@@ -41,6 +48,7 @@ namespace WebApp.ApiControllers
                 FirstName = u.FirstName,
                 LastName = u.LastName,
                 PhoneNumber = u.PhoneNumber,
+                Role = u.UserRoles.FirstOrDefault().Role.Name
                 // UniId = u.UniId
             }));
         }
@@ -94,6 +102,75 @@ namespace WebApp.ApiControllers
                 MatriculationNumber = u.MatriculationNumber,
                 Program = u.Program
             }));
+        }
+        
+        /// <summary>
+        /// Change user's role (admin)
+        /// </summary>
+        /// <returns></returns>
+        [Authorize(Roles = "admin", AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [Produces("application/json")]
+        [HttpPatch("{id}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> ChangeUsersRole(Guid id, string role)
+        {
+            var user = await _context.Users
+                .Include(u => u.UserRoles)
+                .ThenInclude(ur => ur.Role)
+                .FirstOrDefaultAsync(u => u.Id == id);
+            
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            var userRole = user.UserRoles.FirstOrDefault(ur => ur.Role.Name.Equals(role));
+            if (userRole != null)
+            {
+                return BadRequest($"User already has the role {role}");
+            }
+
+            var newRole = await _context.Roles.FirstOrDefaultAsync(r => r.Name.Equals(role));
+            if (newRole == null)
+            {
+                return BadRequest($"Role {role} does not exist");
+            }
+
+            var res = await _userManager.AddToRoleAsync(user, newRole.Name);
+            
+            if (!res.Succeeded)
+            {
+                return BadRequest(
+                    new RestApiErrorResponse()
+                    {
+                        Status = HttpStatusCode.BadRequest,
+                        Error = res.Errors.First().Description
+                    }
+                );
+            }
+            
+            // remove other roles
+            var currentRoles = await _userManager.GetRolesAsync(user);
+            var rolesToRemove = currentRoles
+                .Where(r => !string.Equals(r, newRole.Name, StringComparison.OrdinalIgnoreCase))
+                .ToList();
+            if (rolesToRemove.Count > 0)
+            {
+                var removeRes = _userManager.RemoveFromRolesAsync(user, rolesToRemove).Result;
+                if (!removeRes.Succeeded)
+                {
+                    return BadRequest(
+                        new RestApiErrorResponse()
+                        {
+                            Status = HttpStatusCode.BadRequest,
+                            Error = removeRes.Errors.First().Description
+                        });
+                }
+            }
+
+            return NoContent();
         }
     }
 }
