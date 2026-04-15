@@ -1,5 +1,6 @@
 ﻿using System.Net;
 using Asp.Versioning;
+using Base.Helpers;
 using BLL.Contracts;
 using DAL.EF;
 using Domain.Identity;
@@ -9,6 +10,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using WebApp.Services.Email;
 
 namespace WebApp.ApiControllers
 {
@@ -19,11 +21,13 @@ namespace WebApp.ApiControllers
     {
         private readonly AppDbContext _context;
         private readonly UserManager<AppUser> _userManager;
+        private readonly IEmailService _emailService;
         
-        public UsersController(AppDbContext context, UserManager<AppUser> userManager)
+        public UsersController(AppDbContext context, UserManager<AppUser> userManager, IEmailService emailService)
         {
             _context = context;
             _userManager = userManager;
+            _emailService = emailService;
         }
         
         /// <summary>
@@ -54,10 +58,10 @@ namespace WebApp.ApiControllers
         }
 
         /// <summary>
-        /// Get all supervisors (admin)
+        /// Get all supervisors
         /// </summary>
         /// <returns>List of supervisors</returns>
-        [Authorize(Roles = "admin", AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [Produces("application/json")]
         [ProducesResponseType(typeof(IEnumerable<DTO.v1.Identity.SupervisorInfo>), StatusCodes.Status200OK)]
         [HttpGet("Supervisors")]
@@ -82,6 +86,7 @@ namespace WebApp.ApiControllers
         /// Get all students
         /// </summary>
         /// <returns>List of students</returns>
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [Produces("application/json")]
         [ProducesResponseType(typeof(IEnumerable<DTO.v1.Identity.StudentInfo>), StatusCodes.Status200OK)]
         [HttpGet("Students")]
@@ -105,6 +110,67 @@ namespace WebApp.ApiControllers
         }
         
         /// <summary>
+        /// Email all admin users
+        /// </summary>
+        /// <param name="request">Email payload</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [Produces("application/json")]
+        [Consumes("application/json")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [HttpPost("EmailAdmins")]
+        public async Task<IActionResult> EmailAdmins([FromBody] AdminEmailRequest request, CancellationToken cancellationToken)
+        {
+            if (!ModelState.IsValid)
+            {
+                return ValidationProblem(ModelState);
+            }
+
+            var admins = await _userManager.GetUsersInRoleAsync("admin");
+            // var recipients = admins
+            //     .Where(u => !string.IsNullOrWhiteSpace(u.Email))
+            //     .Select(u => u.Email!)
+            //     .Distinct(StringComparer.OrdinalIgnoreCase)
+            //     .ToList();
+            // TODO: change to admins emails before prod
+            var recipients = new List<string>()
+            {
+            };
+
+            if (recipients.Count == 0)
+            {
+                return NotFound(new RestApiErrorResponse
+                {
+                    Status = HttpStatusCode.NotFound,
+                    Error = "No admin users with an email address were found."
+                });
+            }
+
+            try
+            {
+                var subject = string.IsNullOrWhiteSpace(request.Subject)
+                    ? "ProjectFinder message"
+                    : request.Subject.Trim();
+
+                await _emailService.SendBulkAsync(recipients, subject, request.Body, cancellationToken);
+
+                return Ok(new { sentTo = recipients.Count });
+            }
+            catch (Exception e)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new RestApiErrorResponse
+                {
+                    Status = HttpStatusCode.InternalServerError,
+                    Error = $"Failed to send email: {e.Message}"
+                });
+            }
+        }
+
+        /// <summary>
         /// Change user's role (admin)
         /// </summary>
         /// <returns></returns>
@@ -116,6 +182,11 @@ namespace WebApp.ApiControllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> ChangeUsersRole(Guid id, string role)
         {
+            var currentUserId = User.GetUserId();
+            if (currentUserId == id)
+            {
+                return BadRequest("You cannot change your own role");
+            }
             var user = await _context.Users
                 .Include(u => u.UserRoles)
                 .ThenInclude(ur => ur.Role)

@@ -18,6 +18,7 @@ using Microsoft.IdentityModel.Tokens;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using WebApp;
 using WebApp.Helpers;
+using WebApp.Services.Email;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -93,6 +94,8 @@ builder.Services.AddAuthentication(options =>
 
 builder.Services.AddControllers();
 builder.Services.AddScoped<IUserNameResolver, UserNameResolver>();
+builder.Services.Configure<SmtpOptions>(builder.Configuration.GetSection(SmtpOptions.SectionName));
+builder.Services.AddScoped<IEmailService, SmtpEmailService>();
 
 // TODO: change before production
 builder.Services.AddCors(options =>
