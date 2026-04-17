@@ -28,8 +28,6 @@ public class ApplicationService : BaseService<BLL.DTO.Application, DAL.DTO.Appli
         var dalEntity = Mapper.Map(entity);
         var updatedEntity = await ServiceRepository.UpdateAsync(dalEntity!, userId);
         
-        Console.WriteLine(dalEntity.AcceptedAt);
-        Console.WriteLine(updatedEntity.GroupId);
         if (dalEntity.AcceptedAt != null)
         {
             if (updatedEntity.GroupId != null)
@@ -57,5 +55,45 @@ public class ApplicationService : BaseService<BLL.DTO.Application, DAL.DTO.Appli
         }
         
         return Mapper.Map(updatedEntity);
+    }
+    
+    public override void Remove(BLL.DTO.Application entity, Guid userId = default)
+    {
+        Remove(entity.Id, userId);
+    }
+
+    public override void Remove(Guid id, Guid userId = default)
+    {
+        var entity = ServiceRepository.Find(id, userId);
+        if (entity.UserId != userId)
+        {
+            throw new UnauthorizedAccessException("User is not the owner of the application.");
+        }
+        if (entity.AcceptedAt != null)
+        {
+            throw new InvalidOperationException("Cannot remove an accepted application.");
+        }
+        if (entity != null)
+        {
+            ServiceRepository.Remove(entity, userId);
+        }
+    }
+
+    public override async Task RemoveAsync(Guid id, Guid userId = default)
+    {
+        var entity = await ServiceRepository.FindAsync(id, userId);
+        if (entity.UserId != userId)
+        {
+            throw new UnauthorizedAccessException("User is not the owner of the application.");
+        }
+
+        if (entity.AcceptedAt != null)
+        {
+            throw new InvalidOperationException("Cannot remove an accepted application.");
+        }
+        if (entity != null)
+        {
+            await ServiceRepository.RemoveAsync(id, userId);
+        }
     }
 }

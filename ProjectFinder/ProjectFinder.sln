@@ -31,6 +31,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Other", "Other", "{57E81D99
 		Dockerfile = Dockerfile
 		..\README.md = ..\README.md
 		docker-compose.yaml = docker-compose.yaml
+		.dockerignore = .dockerignore
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DAL.Contracts", "DAL.Contracts\DAL.Contracts.csproj", "{25A5E0EE-A29D-4E65-A06F-EDA387F54512}"

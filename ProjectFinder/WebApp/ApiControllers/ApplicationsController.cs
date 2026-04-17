@@ -172,36 +172,41 @@ namespace WebApp.ApiControllers
             return NoContent();
         }
         
-        // /// <summary>
-        // /// Delete the application by id
-        // /// </summary>
-        // /// <param name="id"></param>
-        // /// <returns></returns>
-        // [Produces("application/json")]
-        // [Consumes("application/json")]
-        // [ProducesResponseType(StatusCodes.Status200OK)]
-        // [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        // [ProducesResponseType(StatusCodes.Status404NotFound)]
-        // [HttpDelete("{id}")]
-        // public async Task<IActionResult> DeleteApplication(Guid id)
-        // {
-        //     var application = await _bll.ApplicationService.FindAsync(id);
-        //     if (application == null)
-        //     {
-        //         return NotFound();
-        //     }
-        //
-        //     try
-        //     {
-        //         _bll.ApplicationService.Remove(application, User.GetUserId());
-        //         await _bll.SaveChangesAsync();
-        //     }
-        //     catch (UnauthorizedAccessException e)
-        //     {
-        //         return Unauthorized(e.Message);
-        //     }
-        //
-        //     return NoContent();
-        // }
+        /// <summary>
+        /// Delete the application by id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [Produces("application/json")]
+        [Consumes("application/json")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteApplication(Guid id)
+        {
+            var application = await _bll.ApplicationService.FindAsync(id);
+            if (application == null)
+            {
+                return NotFound();
+            }
+
+            try
+            {
+                _bll.ApplicationService.Remove(application, User.GetUserId());
+                await _bll.SaveChangesAsync();
+            }
+            catch (InvalidOperationException e)
+            {
+                return BadRequest(e.Message);
+            }
+            catch (UnauthorizedAccessException e)
+            {
+                return Unauthorized(e.Message);
+            }
+        
+            return NoContent();
+        }
     }
 }

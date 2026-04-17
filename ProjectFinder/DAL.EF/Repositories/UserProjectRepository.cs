@@ -16,4 +16,13 @@ public class UserProjectRepository : BaseRepository<UserProject, Domain.UserProj
     {
         return RepositoryDbContext.Set<Domain.UserProject>().AnyAsync(up => up.ProjectId == projectId && up.UserId == userId);
     }
+
+    public async Task<IEnumerable<UserProject>> AllAsyncByProjectId(Guid projectId, Guid userId)
+    {
+        var res = await RepositoryDbSet.AsQueryable()
+            .Where(e => e.ProjectId.Equals(projectId))
+            .ToListAsync();
+
+        return res.Select(e => Mapper.Map(e))!;
+    }
 }

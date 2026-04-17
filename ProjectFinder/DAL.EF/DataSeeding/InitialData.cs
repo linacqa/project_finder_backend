@@ -29,9 +29,9 @@ public static class InitialData
     
     public static readonly (string name, Guid? id)[] StepStatuses =
     [
-        ("Not Started", Guid.Parse("00000000-0000-0000-0000-000000000001")),
-        ("In Progress", Guid.Parse("00000000-0000-0000-0000-000000000002")),
-        ("Completed", Guid.Parse("00000000-0000-0000-0000-000000000003")),
+        ("Pole alustatud", Guid.Parse("00000000-0000-0000-0000-000000000001")),
+        ("Protsessis", Guid.Parse("00000000-0000-0000-0000-000000000002")),
+        ("Tehtud", Guid.Parse("00000000-0000-0000-0000-000000000003")),
     ];
 
     public static readonly (string name, Guid? id)[] ProjectTypes =
@@ -43,11 +43,11 @@ public static class InitialData
 
     public static readonly (string name, Guid? id)[] ProjectStatuses =
     [
-        ("Draft", Guid.Parse("00000000-0000-0000-0000-000000000001")),
-        ("Open", Guid.Parse("00000000-0000-0000-0000-000000000002")),
-        ("Closed", Guid.Parse("00000000-0000-0000-0000-000000000003")),
-        ("Archived", Guid.Parse("00000000-0000-0000-0000-000000000004")),
-        ("Completed", Guid.Parse("00000000-0000-0000-0000-000000000005")),
+        ("Mustand", Guid.Parse("00000000-0000-0000-0000-000000000001")),
+        ("Avatud", Guid.Parse("00000000-0000-0000-0000-000000000002")),
+        ("Suletud", Guid.Parse("00000000-0000-0000-0000-000000000003")),
+        ("Arhiveeritud", Guid.Parse("00000000-0000-0000-0000-000000000004")),
+        ("Tehtud", Guid.Parse("00000000-0000-0000-0000-000000000005")),
     ];
 
     public static readonly (string name, Guid? id)[] UserProjectRoles = [

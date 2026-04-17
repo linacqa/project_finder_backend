@@ -29,6 +29,7 @@ namespace WebApp.ApiControllers
         /// </summary>
         /// <param name="searchRequest"></param>
         /// <returns>List of matching projects</returns>
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [Produces("application/json")]
         [ProducesResponseType(typeof(PageResult<DTO.v1.Project>), StatusCodes.Status200OK)]
         [HttpGet("search")]
@@ -49,6 +50,7 @@ namespace WebApp.ApiControllers
         /// Get all projects
         /// </summary>
         /// <returns>List of projects</returns>
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [Produces("application/json")]
         [ProducesResponseType(typeof(IEnumerable<DTO.v1.Project>), StatusCodes.Status200OK)]
         [HttpGet]
@@ -58,12 +60,35 @@ namespace WebApp.ApiControllers
             
             return data.Select(d => _mapper.Map(d)!).ToList();
         }
+        
+        /// <summary>
+        /// Get all current user's projects
+        /// </summary>
+        /// <returns>List of projects</returns>
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [Produces("application/json")]
+        [ProducesResponseType(typeof(IEnumerable<DTO.v1.Project>), StatusCodes.Status200OK)]
+        [HttpGet("my")]
+        public async Task<ActionResult<IEnumerable<DTO.v1.Project>>> GetCurrentUsersProjects()
+        {
+            var userId = User.GetUserId();
+            try
+            {
+                var data = (await _bll.ProjectService.AllCurrentUserAsync(userId)).ToList();
+                return data.Select(d => _mapper.Map(d)!).ToList();
+            }
+            catch (UnauthorizedAccessException e)
+            {
+                return Unauthorized(e.Message);
+            }
+        }
 
         /// <summary>
         /// Get a single project by id
         /// </summary>
         /// <param name="id"></param>
         /// <returns>Project</returns>
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [Produces("application/json")]
         [ProducesResponseType(typeof(DTO.v1.Project), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -93,17 +118,17 @@ namespace WebApp.ApiControllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutProject(Guid id, DTO.v1.Project project)
+        public async Task<IActionResult> PutProject(Guid id, DTO.v1.ProjectCreate project)
         {
-            if (id != project.Id)
-            {
-                return BadRequest();
-            }
-
             try
             {
-                await _bll.ProjectService.UpdateAsync(_mapper.Map(project)!);
+                var projectToUpdate = _mapper.Map(project);
+                projectToUpdate.Id = id;
+                await _bll.ProjectService.UpdateAsync(projectToUpdate);
                 await _bll.SaveChangesAsync();
+            } catch (ArgumentException e)
+            {
+                return BadRequest(e.Message);
             }
             catch (UnauthorizedAccessException e)
             {
@@ -155,7 +180,7 @@ namespace WebApp.ApiControllers
         [Authorize(Roles = "admin", AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [Produces("application/json")]
         [Consumes("application/json")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [HttpDelete("{id}")]
