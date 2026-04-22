@@ -35,6 +35,34 @@ namespace WebApp.ApiControllers
             
             return data.Select(d => _mapper.Map(d)!).ToList();
         }
+        
+        /// <summary>
+        /// Get all invitation to group
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns>List of invitations to group</returns>
+        [Produces("application/json")]
+        [ProducesResponseType(typeof(IEnumerable<DTO.v1.Invitation>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [HttpGet("group/{id}")]
+        public async Task<ActionResult<IEnumerable<DTO.v1.Invitation>>> GetInvitationsByGroupId(Guid id)
+        {
+            var userId = User.GetUserId();
+
+            try
+            {
+                var data = (await _bll.InvitationService.AllAsyncByGroupId(id, userId)).ToList();
+                            
+                return data.Select(d => _mapper.Map(d)!).ToList();
+            } catch (UnauthorizedAccessException e)
+            {
+                return Unauthorized(e.Message);
+            } catch (InvalidOperationException e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
 
         /// <summary>
         /// Get a single invitation by id
@@ -121,40 +149,6 @@ namespace WebApp.ApiControllers
             
             return NoContent();
         }
-        
-        // /// <summary>
-        // /// Update the invitation by id (admin)
-        // /// </summary>
-        // /// <param name="id"></param>
-        // /// <param name="invitation"></param>
-        // /// <returns></returns>
-        // [Produces("application/json")]
-        // [Consumes("application/json")]
-        // [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        // // [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        // [ProducesResponseType(StatusCodes.Status204NoContent)]
-        // [HttpPut("{id}")]
-        // public async Task<IActionResult> PutInvitation(Guid id, InvitationCreateUpdate invitation)
-        // {
-        //     // if (id != invitation.Id)
-        //     // {
-        //     //     return BadRequest();
-        //     // }
-        //
-        //     try
-        //     {
-        //         var invitationWithId = _mapper.Map(invitation);
-        //         invitationWithId.Id = id;
-        //         await _bll.InvitationService.UpdateAsync(invitationWithId, User.GetUserId());
-        //         await _bll.SaveChangesAsync();
-        //     }
-        //     catch (UnauthorizedAccessException e)
-        //     {
-        //         return Unauthorized(e.Message);
-        //     }
-        //
-        //     return NoContent();
-        // }
 
         /// <summary>
         /// Send a new invitation
@@ -192,36 +186,41 @@ namespace WebApp.ApiControllers
             }, _mapper.Map(bllInvitation)!);
         }
         
-        // /// <summary>
-        // /// Delete the invitation by id
-        // /// </summary>
-        // /// <param name="id"></param>
-        // /// <returns></returns>
-        // [Produces("application/json")]
-        // [Consumes("application/json")]
-        // [ProducesResponseType(StatusCodes.Status200OK)]
-        // [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        // [ProducesResponseType(StatusCodes.Status404NotFound)]
-        // [HttpDelete("{id}")]
-        // public async Task<IActionResult> DeleteInvitation(Guid id)
-        // {
-        //     var invitation = await _bll.InvitationService.FindAsync(id);
-        //     if (invitation == null)
-        //     {
-        //         return NotFound();
-        //     }
-        //
-        //     try
-        //     {
-        //         _bll.InvitationService.Remove(invitation, User.GetUserId());
-        //         await _bll.SaveChangesAsync();
-        //     }
-        //     catch (UnauthorizedAccessException e)
-        //     {
-        //         return Unauthorized(e.Message);
-        //     }
-        //
-        //     return NoContent();
-        // }
+        /// <summary>
+        /// Delete the invitation by id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [Produces("application/json")]
+        [Consumes("application/json")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteInvitation(Guid id)
+        {
+            var invitation = await _bll.InvitationService.FindAsync(id);
+            if (invitation == null)
+            {
+                return NotFound();
+            }
+
+            try
+            {
+                _bll.InvitationService.Remove(invitation, User.GetUserId());
+                await _bll.SaveChangesAsync();
+            }
+            catch (InvalidOperationException e)
+            {
+                return BadRequest(e.Message);
+            }
+            catch (UnauthorizedAccessException e)
+            {
+                return Unauthorized(e.Message);
+            }
+        
+            return NoContent();
+        }
     }
 }

@@ -14,23 +14,32 @@ public class ApplicationRepository : BaseRepository<Application, Domain.Applicat
     
     public override IEnumerable<DAL.DTO.Application> All(Guid userId = default!)
     {
-        return GetQuery(userId)
+        IQueryable<Domain.Application> query = GetQuery(userId)
             .Include(e => e.Group)
-                .ThenInclude(g => g.UserGroups)
+            .ThenInclude(g => g.UserGroups)
             .Include(e => e.User)
-            .Include(e => e.Project)
-            .ToList()
+            .Include(e => e.Project);
+
+        if (userId != default)
+        {
+            query = query.Where(e => e.UserId.Equals(userId));
+        }
+        return query.ToList()
             .Select(e => Mapper.Map(e)!);
     }
 
     public override async Task<IEnumerable<DAL.DTO.Application>> AllAsync(Guid userId = default!)
     {
-        return (await GetQuery(userId)
-                .Include(e => e.Group)
-                .ThenInclude(g => g.UserGroups)
-                .Include(e => e.User)
-                .Include(e => e.Project)
-                .ToListAsync())
+        IQueryable<Domain.Application> query = GetQuery(userId)
+            .Include(e => e.Group)
+            .ThenInclude(g => g.UserGroups)
+            .Include(e => e.User)
+            .Include(e => e.Project);
+        if (userId != default)  
+        {
+            query = query.Where(e => e.UserId.Equals(userId));
+        }
+        return (await query.ToListAsync())
             .Select(e => Mapper.Map(e)!);
     }
     

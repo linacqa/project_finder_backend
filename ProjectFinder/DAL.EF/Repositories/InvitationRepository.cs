@@ -24,4 +24,17 @@ public class InvitationRepository : BaseRepository<Invitation, Domain.Invitation
                 .ToListAsync())
             .Select(e => Mapper.Map(e)!);
     }
+    
+    public async Task<IEnumerable<Invitation>> AllAsyncByGroupId(Guid groupId, Guid userId = default)
+    {
+        return (await GetQuery(userId)
+                .Where(e => e.GroupId == groupId)
+                .Include(e => e.ToUser)
+                .Include(e => e.User)
+                .Include(e => e.Group)
+                    .ThenInclude(e => e.UserGroups)!
+                        .ThenInclude(u => u.User)
+                .ToListAsync())
+            .Select(e => Mapper.Map(e)!);
+    }
 }

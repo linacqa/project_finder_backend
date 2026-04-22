@@ -143,36 +143,73 @@ namespace WebApp.ApiControllers
             }, _mapper.Map(bllGroup)!);
         }
         
-        // /// <summary>
-        // /// Delete the group by id
-        // /// </summary>
-        // /// <param name="id"></param>
-        // /// <returns></returns>
-        // [Produces("application/json")]
-        // [Consumes("application/json")]
-        // [ProducesResponseType(StatusCodes.Status200OK)]
-        // [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        // [ProducesResponseType(StatusCodes.Status404NotFound)]
-        // [HttpDelete("{id}")]
-        // public async Task<IActionResult> DeleteGroup(Guid id)
-        // {
-        //     var group = await _bll.GroupService.FindAsync(id);
-        //     if (group == null)
-        //     {
-        //         return NotFound();
-        //     }
-        //
-        //     try
-        //     {
-        //         _bll.GroupService.Remove(group, User.GetUserId());
-        //         await _bll.SaveChangesAsync();
-        //     }
-        //     catch (UnauthorizedAccessException e)
-        //     {
-        //         return Unauthorized(e.Message);
-        //     }
-        //
-        //     return NoContent();
-        // }
+        /// <summary>
+        /// Delete the group by id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [Produces("application/json")]
+        [Consumes("application/json")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteGroup(Guid id)
+        {
+            var group = await _bll.GroupService.FindAsync(id);
+            if (group == null)
+            {
+                return NotFound();
+            }
+        
+            try
+            {
+                _bll.GroupService.Remove(group, User.GetUserId());
+                await _bll.SaveChangesAsync();
+            }
+            catch (UnauthorizedAccessException e)
+            {
+                return Unauthorized(e.Message);
+            }
+        
+            return NoContent();
+        }
+        
+        /// <summary>
+        /// Delete the group member by id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [Produces("application/json")]
+        [Consumes("application/json")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [HttpDelete("member/{id}")]
+        public async Task<IActionResult> DeleteGroupMember(Guid id)
+        {
+            var userGroup = await _bll.UserGroupService.FindAsync(id);
+            if (userGroup == null)
+            {
+                return NotFound();
+            }
+
+            try
+            {
+                _bll.UserGroupService.Remove(userGroup, User.GetUserId());
+                await _bll.SaveChangesAsync();
+            }
+            catch (UnauthorizedAccessException e)
+            {
+                return Unauthorized(e.Message);
+            }
+            catch (InvalidOperationException e)
+            {
+                return BadRequest(e.Message);
+            }
+        
+            return NoContent();
+        }
     }
 }

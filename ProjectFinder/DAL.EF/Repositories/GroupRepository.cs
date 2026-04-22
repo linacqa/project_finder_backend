@@ -88,13 +88,7 @@ public class GroupRepository : BaseRepository<Group, Domain.Group>, IGroupReposi
 
     public override void Remove(Group entity, Guid userId = default)
     {
-        var group = RepositoryDbContext.Set<Domain.Group>().FirstOrDefault(c => c.Id == entity.Id);
-        if (group == null || group.UserId != userId)
-        {
-            throw new UnauthorizedAccessException("The current user does not own the group.");
-        }
-        
-        base.Remove(entity, userId);
+        Remove(entity.Id, userId);
     }
 
     public override void Remove(Guid id, Guid userId)
@@ -104,18 +98,51 @@ public class GroupRepository : BaseRepository<Group, Domain.Group>, IGroupReposi
         {
             throw new UnauthorizedAccessException("The current user does not own the group.");
         }
-        
+
+        DeleteGroupDependencies(id);
         base.Remove(id, userId);
     }
 
-    public override Task RemoveAsync(Guid id, Guid userId = default)
+    public override async Task RemoveAsync(Guid id, Guid userId = default)
     {
-        var group = RepositoryDbContext.Set<Domain.Group>().FirstOrDefault(c => c.Id == id);
+        var group = await RepositoryDbContext.Set<Domain.Group>().FirstOrDefaultAsync(c => c.Id == id);
         if (group == null || group.UserId != userId)
         {
             throw new UnauthorizedAccessException("The current user does not own the group.");
         }
 
-        return base.RemoveAsync(id, userId);
+        await DeleteGroupDependenciesAsync(id);
+        await base.RemoveAsync(id, userId);
+    }
+
+    private void DeleteGroupDependencies(Guid groupId)
+    {
+        var invitations = RepositoryDbContext.Set<Domain.Invitation>()
+            .Where(i => i.GroupId == groupId);
+        var applications = RepositoryDbContext.Set<Domain.Application>()
+            .Where(a => a.GroupId == groupId);
+        var userGroups = RepositoryDbContext.Set<Domain.UserGroup>()
+            .Where(ug => ug.GroupId == groupId);
+
+        RepositoryDbContext.RemoveRange(invitations);
+        RepositoryDbContext.RemoveRange(applications);
+        RepositoryDbContext.RemoveRange(userGroups);
+    }
+
+    private async Task DeleteGroupDependenciesAsync(Guid groupId)
+    {
+        var invitations = await RepositoryDbContext.Set<Domain.Invitation>()
+            .Where(i => i.GroupId == groupId)
+            .ToListAsync();
+        var applications = await RepositoryDbContext.Set<Domain.Application>()
+            .Where(a => a.GroupId == groupId)
+            .ToListAsync();
+        var userGroups = await RepositoryDbContext.Set<Domain.UserGroup>()
+            .Where(ug => ug.GroupId == groupId)
+            .ToListAsync();
+
+        RepositoryDbContext.RemoveRange(invitations);
+        RepositoryDbContext.RemoveRange(applications);
+        RepositoryDbContext.RemoveRange(userGroups);
     }
 }

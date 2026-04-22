@@ -23,7 +23,7 @@ namespace WebApp.ApiControllers
         }
 
         /// <summary>
-        /// Get all applications
+        /// Get all applications (admin)
         /// </summary>
         /// <returns>List of applications</returns>
         [Authorize(Roles = "admin", AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
@@ -102,19 +102,25 @@ namespace WebApp.ApiControllers
         [Consumes("application/json")]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(DTO.v1.Application), StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         // [ProducesResponseType(typeof(DTO.v1.Application), StatusCodes.Status200OK)]
         [HttpPost]
         public async Task<ActionResult<DTO.v1.Application>> PostApplication(ApplicationCreate application)
         {
             var bllApplication = _mapper.Map(application);
-        
+
             try
             {
-                _bll.ApplicationService.Add(bllApplication, User.GetUserId());
+                await _bll.ApplicationService.AddWithValidationAsync(bllApplication, User.GetUserId());
                 await _bll.SaveChangesAsync();
-            } catch (UnauthorizedAccessException e)
+            }
+            catch (UnauthorizedAccessException e)
             {
                 return Unauthorized(e.Message);
+            }
+            catch (InvalidOperationException e)
+            {
+                return BadRequest(e.Message);
             }
             
             return CreatedAtAction("GetApplication", new

@@ -16,4 +16,31 @@ public class UserGroupRepository : BaseRepository<UserGroup, Domain.UserGroup>, 
     {
         return RepositoryDbContext.Set<Domain.UserGroup>().Any(ug => ug.UserId == userId && ug.GroupId == groupId);
     }
+
+    public override void Remove(UserGroup entity, Guid userId = default)
+    {
+        Remove(entity.Id, userId);
+    }
+
+    public override void Remove(Guid id, Guid userId)
+    {
+        var query = RepositoryDbSet.AsQueryable();
+        query = query.Where(e => e.Id.Equals(id));
+        var dbEntity = query.FirstOrDefault();
+        if (dbEntity != null)
+        {
+            RepositoryDbSet.Remove(dbEntity);
+        }
+    }
+
+    public override async Task RemoveAsync(Guid id, Guid userId = default)
+    {
+        var query = RepositoryDbSet.AsQueryable();
+        query = query.Where(e => e.Id.Equals(id));
+        var dbEntity = await query.FirstOrDefaultAsync();
+        if (dbEntity != null)
+        {
+            RepositoryDbSet.Remove(dbEntity);
+        }
+    }
 }

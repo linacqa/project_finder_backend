@@ -144,36 +144,36 @@ namespace WebApp.ApiControllers
             }, _mapper.Map(bllComment)!);
         }
         
-        // /// <summary>
-        // /// Delete the comment by id
-        // /// </summary>
-        // /// <param name="id"></param>
-        // /// <returns></returns>
-        // [Produces("application/json")]
-        // [Consumes("application/json")]
-        // [ProducesResponseType(StatusCodes.Status200OK)]
-        // [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        // [ProducesResponseType(StatusCodes.Status404NotFound)]
-        // [HttpDelete("{id}")]
-        // public async Task<IActionResult> DeleteComment(Guid id)
-        // {
-        //     var comment = await _bll.CommentService.FindAsync(id);
-        //     if (comment == null)
-        //     {
-        //         return NotFound();
-        //     }
-        //
-        //     try
-        //     {
-        //         _bll.CommentService.Remove(comment, User.GetUserId());
-        //         await _bll.SaveChangesAsync();
-        //     }
-        //     catch (UnauthorizedAccessException e)
-        //     {
-        //         return Unauthorized(e.Message);
-        //     }
-        //
-        //     return NoContent();
-        // }
+        /// <summary>
+        /// Delete the comment by id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [Produces("application/json")]
+        [Consumes("application/json")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteComment(Guid id)
+        {
+            var comment = await _bll.CommentService.FindAsync(id, User.GetUserId());
+            if (comment == null)
+            {
+                return NotFound();
+            }
+        
+            try
+            {
+                _bll.CommentService.Remove(comment, User.GetUserId());
+                await _bll.SaveChangesAsync();
+            }
+            catch (UnauthorizedAccessException e)
+            {
+                return Unauthorized(e.Message);
+            }
+        
+            return NoContent();
+        }
     }
 }

@@ -56,7 +56,17 @@ public class ApplicationService : BaseService<BLL.DTO.Application, DAL.DTO.Appli
         
         return Mapper.Map(updatedEntity);
     }
-    
+
+    public async Task AddWithValidationAsync(Application entity, Guid userId = default)
+    {
+        var existing = await FindAsyncByProjectId(entity.ProjectId, userId);
+        if (existing != null)
+        {
+            throw new InvalidOperationException("User has already applied to this project.");
+        }
+        base.Add(entity, userId);
+    }
+
     public override void Remove(BLL.DTO.Application entity, Guid userId = default)
     {
         Remove(entity.Id, userId);
