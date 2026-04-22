@@ -22,4 +22,9 @@ public class CommentRepository : BaseRepository<Comment, Domain.Comment>, IComme
 
         return res.Select(e => Mapper.Map(e))!;
     }
+    
+    public Task<bool> CommentHasReplies(Guid commentId)
+    {
+        return RepositoryDbContext.Set<Domain.Comment>().AnyAsync(up => up.ReplyToCommentId == commentId);
+    }
 }
