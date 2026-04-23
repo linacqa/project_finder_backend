@@ -147,7 +147,6 @@ namespace WebApp.ApiControllers
         [Consumes("application/json")]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(DTO.v1.Project), StatusCodes.Status201Created)]
-        // [ProducesResponseType(typeof(DTO.v1.Project), StatusCodes.Status200OK)]
         [HttpPost]
         public async Task<ActionResult<DTO.v1.Project>> PostProject(ProjectCreate project)
         {

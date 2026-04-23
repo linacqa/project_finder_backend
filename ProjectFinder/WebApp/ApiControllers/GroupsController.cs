@@ -3,6 +3,8 @@ using Base.Helpers;
 using BLL.Contracts;
 using Microsoft.AspNetCore.Mvc;
 using DTO.v1;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 
 namespace WebApp.ApiControllers
 {
@@ -24,6 +26,7 @@ namespace WebApp.ApiControllers
         /// Get all groups
         /// </summary>
         /// <returns>List of groups</returns>
+        [Authorize(Roles = "student,admin", AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [Produces("application/json")]
         [ProducesResponseType(typeof(IEnumerable<DTO.v1.Group>), StatusCodes.Status200OK)]
         [HttpGet]
@@ -39,6 +42,7 @@ namespace WebApp.ApiControllers
         /// </summary>
         /// <param name="projectId">Project ID</param>
         /// <returns>List of matching groups</returns>
+        [Authorize(Roles = "student,admin", AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [Produces("application/json")]
         [ProducesResponseType(typeof(IEnumerable<DTO.v1.Group>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -63,6 +67,7 @@ namespace WebApp.ApiControllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns>Group</returns>
+        [Authorize(Roles = "student,admin", AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [Produces("application/json")]
         [ProducesResponseType(typeof(DTO.v1.Group), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -79,49 +84,15 @@ namespace WebApp.ApiControllers
             return _mapper.Map(group)!;
         }
 
-        // /// <summary>
-        // /// Update the group by id (admin)
-        // /// </summary>
-        // /// <param name="id"></param>
-        // /// <param name="group"></param>
-        // /// <returns></returns>
-        // [Produces("application/json")]
-        // [Consumes("application/json")]
-        // [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        // // [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        // [ProducesResponseType(StatusCodes.Status204NoContent)]
-        // [HttpPut("{id}")]
-        // public async Task<IActionResult> PutGroup(Guid id, GroupCreateUpdate group)
-        // {
-        //     // if (id != group.Id)
-        //     // {
-        //     //     return BadRequest();
-        //     // }
-        //
-        //     try
-        //     {
-        //         var groupWithId = _mapper.Map(group);
-        //         groupWithId.Id = id;
-        //         await _bll.GroupService.UpdateAsync(groupWithId, User.GetUserId());
-        //         await _bll.SaveChangesAsync();
-        //     }
-        //     catch (UnauthorizedAccessException e)
-        //     {
-        //         return Unauthorized(e.Message);
-        //     }
-        //
-        //     return NoContent();
-        // }
-
         /// <summary>
         /// Add a new group
         /// </summary>
         /// <param name="group"></param>
         /// <returns></returns>
+        [Authorize(Roles = "student,admin", AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [Consumes("application/json")]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(DTO.v1.Group), StatusCodes.Status201Created)]
-        // [ProducesResponseType(typeof(DTO.v1.Group), StatusCodes.Status200OK)]
         [HttpPost]
         public async Task<ActionResult<DTO.v1.Group>> PostGroup(GroupCreateUpdate group)
         {
@@ -148,9 +119,10 @@ namespace WebApp.ApiControllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
+        [Authorize(Roles = "student,admin", AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [Produces("application/json")]
         [Consumes("application/json")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [HttpDelete("{id}")]
@@ -180,9 +152,10 @@ namespace WebApp.ApiControllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
+        [Authorize(Roles = "student,admin", AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [Produces("application/json")]
         [Consumes("application/json")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

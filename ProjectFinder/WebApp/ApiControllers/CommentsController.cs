@@ -21,26 +21,13 @@ namespace WebApp.ApiControllers
         {
             _bll = bll;
         }
-
-        // /// <summary>
-        // /// Get all comments
-        // /// </summary>
-        // /// <returns>List of comments</returns>
-        // [Produces("application/json")]
-        // [ProducesResponseType(typeof(IEnumerable<DTO.v1.Comment>), StatusCodes.Status200OK)]
-        // [HttpGet]
-        // public async Task<ActionResult<IEnumerable<DTO.v1.Comment>>> GetComments()
-        // {
-        //     var data = (await _bll.CommentService.AllAsync()).ToList();
-        //     
-        //     return data.Select(d => _mapper.Map(d)!).ToList();
-        // }
         
         /// <summary>
         /// Get comments by project id
         /// </summary>
         /// <param name="projectId"></param>
         /// <returns>Comment</returns>
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [Produces("application/json")]
         [ProducesResponseType(typeof(IEnumerable<DTO.v1.Comment>), StatusCodes.Status200OK)]
         [HttpGet("project/{projectId}")]
@@ -63,6 +50,7 @@ namespace WebApp.ApiControllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns>Comment</returns>
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [Produces("application/json")]
         [ProducesResponseType(typeof(DTO.v1.Comment), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -79,40 +67,6 @@ namespace WebApp.ApiControllers
             return _mapper.Map(comment)!;
         }
 
-        // /// <summary>
-        // /// Update the comment by id (admin)
-        // /// </summary>
-        // /// <param name="id"></param>
-        // /// <param name="comment"></param>
-        // /// <returns></returns>
-        // [Produces("application/json")]
-        // [Consumes("application/json")]
-        // [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        // // [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        // [ProducesResponseType(StatusCodes.Status204NoContent)]
-        // [HttpPut("{id}")]
-        // public async Task<IActionResult> PutComment(Guid id, CommentCreateUpdate comment)
-        // {
-        //     // if (id != comment.Id)
-        //     // {
-        //     //     return BadRequest();
-        //     // }
-        //
-        //     try
-        //     {
-        //         var commentWithId = _mapper.Map(comment);
-        //         commentWithId.Id = id;
-        //         await _bll.CommentService.UpdateAsync(commentWithId, User.GetUserId());
-        //         await _bll.SaveChangesAsync();
-        //     }
-        //     catch (UnauthorizedAccessException e)
-        //     {
-        //         return Unauthorized(e.Message);
-        //     }
-        //
-        //     return NoContent();
-        // }
-
         /// <summary>
         /// Add a new comment
         /// </summary>
@@ -122,7 +76,6 @@ namespace WebApp.ApiControllers
         [Consumes("application/json")]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(DTO.v1.Comment), StatusCodes.Status201Created)]
-        // [ProducesResponseType(typeof(DTO.v1.Comment), StatusCodes.Status200OK)]
         [HttpPost]
         public async Task<ActionResult<DTO.v1.Comment>> PostComment(CommentCreateUpdate comment)
         {
@@ -149,9 +102,10 @@ namespace WebApp.ApiControllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [Produces("application/json")]
         [Consumes("application/json")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [HttpDelete("{id}")]

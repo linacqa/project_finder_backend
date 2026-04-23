@@ -26,6 +26,7 @@ namespace WebApp.ApiControllers
         /// Get all projectTypes
         /// </summary>
         /// <returns>List of projectTypes</returns>
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [Produces("application/json")]
         [ProducesResponseType(typeof(IEnumerable<DTO.v1.ProjectType>), StatusCodes.Status200OK)]
         [HttpGet]
@@ -41,6 +42,7 @@ namespace WebApp.ApiControllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns>ProjectType</returns>
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [Produces("application/json")]
         [ProducesResponseType(typeof(DTO.v1.ProjectType), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -56,102 +58,5 @@ namespace WebApp.ApiControllers
 
             return _mapper.Map(projectType)!;
         }
-
-        // /// <summary>
-        // /// Update the projectType by id (admin)
-        // /// </summary>
-        // /// <param name="id"></param>
-        // /// <param name="projectType"></param>
-        // /// <returns></returns>
-        // [Authorize(Roles = "admin", AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        // [Produces("application/json")]
-        // [Consumes("application/json")]
-        // [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        // [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        // [ProducesResponseType(StatusCodes.Status204NoContent)]
-        // [HttpPut("{id}")]
-        // public async Task<IActionResult> PutProjectType(Guid id, DTO.v1.ProjectType projectType)
-        // {
-        //     if (id != projectType.Id)
-        //     {
-        //         return BadRequest();
-        //     }
-        //
-        //     try
-        //     {
-        //         await _bll.ProjectTypeService.UpdateAsync(_mapper.Map(projectType)!, User.GetUserId());
-        //         await _bll.SaveChangesAsync();
-        //     }
-        //     catch (UnauthorizedAccessException e)
-        //     {
-        //         return Unauthorized(e.Message);
-        //     }
-        //
-        //     return NoContent();
-        // }
-
-        // /// <summary>
-        // /// Add a new projectType (admin)
-        // /// </summary>
-        // /// <param name="projectType"></param>
-        // /// <returns></returns>
-        // [Authorize(Roles = "admin", AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        // [Consumes("application/json")]
-        // [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        // [ProducesResponseType(StatusCodes.Status201Created)]
-        // [ProducesResponseType(typeof(DTO.v1.ProjectType), StatusCodes.Status200OK)]
-        // [HttpPost]
-        // public async Task<ActionResult<DTO.v1.ProjectType>> PostProjectType(ProjectTypeCreate projectType)
-        // {
-        //     var bllProjectType = _mapper.Map(projectType);
-        //
-        //     try
-        //     {
-        //         _bll.ProjectTypeService.Add(bllProjectType, User.GetUserId());
-        //         await _bll.SaveChangesAsync();
-        //     } catch (UnauthorizedAccessException e)
-        //     {
-        //         return Unauthorized(e.Message);
-        //     }
-        //     
-        //     return CreatedAtAction("GetProjectType", new
-        //     {
-        //         id = bllProjectType.Id,
-        //         version = HttpContext.GetRequestedApiVersion()!.ToString()
-        //     }, _mapper.Map(bllProjectType)!);
-        // }
-        
-        // /// <summary>
-        // /// Delete the projectType by id (admin)
-        // /// </summary>
-        // /// <param name="id"></param>
-        // /// <returns></returns>
-        // [Authorize(Roles = "admin", AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        // [Produces("application/json")]
-        // [Consumes("application/json")]
-        // [ProducesResponseType(StatusCodes.Status200OK)]
-        // [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        // [ProducesResponseType(StatusCodes.Status404NotFound)]
-        // [HttpDelete("{id}")]
-        // public async Task<IActionResult> DeleteProjectType(Guid id)
-        // {
-        //     var projectType = await _bll.ProjectTypeService.FindAsync(id);
-        //     if (projectType == null)
-        //     {
-        //         return NotFound();
-        //     }
-        //
-        //     try
-        //     {
-        //         _bll.ProjectTypeService.Remove(projectType, User.GetUserId());
-        //         await _bll.SaveChangesAsync();
-        //     }
-        //     catch (UnauthorizedAccessException e)
-        //     {
-        //         return Unauthorized(e.Message);
-        //     }
-        //
-        //     return NoContent();
-        // }
     }
 }

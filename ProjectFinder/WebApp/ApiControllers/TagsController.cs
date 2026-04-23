@@ -26,6 +26,7 @@ namespace WebApp.ApiControllers
         /// Get all tags
         /// </summary>
         /// <returns>List of tags</returns>
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [Produces("application/json")]
         [ProducesResponseType(typeof(IEnumerable<DTO.v1.Tag>), StatusCodes.Status200OK)]
         [HttpGet]
@@ -41,6 +42,7 @@ namespace WebApp.ApiControllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns>Tag</returns>
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [Produces("application/json")]
         [ProducesResponseType(typeof(DTO.v1.Tag), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -99,7 +101,6 @@ namespace WebApp.ApiControllers
         [Consumes("application/json")]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(DTO.v1.Tag), StatusCodes.Status201Created)]
-        // [ProducesResponseType(typeof(DTO.v1.Tag), StatusCodes.Status200OK)]
         [HttpPost]
         public async Task<ActionResult<DTO.v1.Tag>> PostTag(TagCreate tag)
         {

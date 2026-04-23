@@ -59,6 +59,7 @@ public class ApplicationService : BaseService<BLL.DTO.Application, DAL.DTO.Appli
 
     public async Task AddWithValidationAsync(Application entity, Guid userId = default)
     {
+        // TODO: check that the project status is open
         var existing = await FindAsyncByProjectId(entity.ProjectId, userId);
         if (existing != null)
         {

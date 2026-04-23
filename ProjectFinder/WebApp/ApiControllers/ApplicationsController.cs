@@ -41,6 +41,7 @@ namespace WebApp.ApiControllers
         /// Get all current user's applications
         /// </summary>
         /// <returns>List of all current user's applications</returns>
+        [Authorize(Roles = "student,admin", AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [Produces("application/json")]
         [ProducesResponseType(typeof(IEnumerable<DTO.v1.Application>), StatusCodes.Status200OK)]
         [HttpGet("my")]
@@ -56,6 +57,7 @@ namespace WebApp.ApiControllers
         /// </summary>
         /// <param name="projectId"></param>
         /// <returns>Application</returns>
+        [Authorize(Roles = "student,admin", AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [Produces("application/json")]
         [ProducesResponseType(typeof(DTO.v1.Application), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -77,6 +79,7 @@ namespace WebApp.ApiControllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns>Application</returns>
+        [Authorize(Roles = "student,admin", AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [Produces("application/json")]
         [ProducesResponseType(typeof(DTO.v1.Application), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -98,12 +101,11 @@ namespace WebApp.ApiControllers
         /// </summary>
         /// <param name="application"></param>
         /// <returns></returns>
-        [Authorize(Roles = "student", AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [Authorize(Roles = "student,admin", AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [Consumes("application/json")]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(DTO.v1.Application), StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        // [ProducesResponseType(typeof(DTO.v1.Application), StatusCodes.Status200OK)]
         [HttpPost]
         public async Task<ActionResult<DTO.v1.Application>> PostApplication(ApplicationCreate application)
         {
@@ -183,9 +185,10 @@ namespace WebApp.ApiControllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
+        [Authorize(Roles = "student,admin", AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [Produces("application/json")]
         [Consumes("application/json")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

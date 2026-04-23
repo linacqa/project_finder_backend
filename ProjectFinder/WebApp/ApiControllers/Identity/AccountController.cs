@@ -541,6 +541,7 @@ public class AccountController : ControllerBase
     /// Get current user info
     /// </summary>
     /// <returns>Current user info</returns>
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [Produces("application/json")]
     [ProducesResponseType(typeof(DTO.v1.Identity.CurrentUserInfo), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
