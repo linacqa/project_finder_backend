@@ -108,7 +108,42 @@ namespace WebApp.ApiControllers
                 Program = u.Program
             }));
         }
-        
+
+        /// <summary>
+        /// Get user's info by id
+        /// </summary>
+        /// <param name="id">User id</param>
+        /// <returns>User info</returns>
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [Produces("application/json")]
+        [ProducesResponseType(typeof(DTO.v1.Identity.UserInfo), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [HttpGet("{id}")]
+        public async Task<ActionResult<DTO.v1.Identity.UserInfo>> GetUser(Guid id)
+        {
+            var user = await _context.Users
+                .Include(u => u.UserRoles)!
+                .ThenInclude(ur => ur.Role)
+                .FirstOrDefaultAsync(u => u.Id == id);
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(new UserInfo()
+            {
+                Id = user.Id,
+                Email = user.Email,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                PhoneNumber = user.PhoneNumber,
+                Role = user.UserRoles.FirstOrDefault().Role.Name,
+                UniId = user.UniId,
+                MatriculationNumber = user.MatriculationNumber,
+                Program = user.Program,
+            });
+        }
+
         /// <summary>
         /// Email all admin users
         /// </summary>
