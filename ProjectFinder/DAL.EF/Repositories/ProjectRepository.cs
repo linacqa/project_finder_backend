@@ -206,14 +206,6 @@ public class ProjectRepository : BaseRepository<Project, Domain.Project>, IProje
             RepositoryDbContext.RemoveRange(applications);
         }
 
-        var groupProjects = RepositoryDbContext.Set<Domain.GroupProject>()
-            .Where(e => e.ProjectId == projectId)
-            .ToList();
-        if (groupProjects.Count > 0)
-        {
-            RepositoryDbContext.RemoveRange(groupProjects);
-        }
-
         DeleteProjectComments(projectId);
     }
 
@@ -257,14 +249,6 @@ public class ProjectRepository : BaseRepository<Project, Domain.Project>, IProje
         if (applications.Count > 0)
         {
             RepositoryDbContext.RemoveRange(applications);
-        }
-
-        var groupProjects = await RepositoryDbContext.Set<Domain.GroupProject>()
-            .Where(e => e.ProjectId == projectId)
-            .ToListAsync();
-        if (groupProjects.Count > 0)
-        {
-            RepositoryDbContext.RemoveRange(groupProjects);
         }
 
         await DeleteProjectCommentsAsync(projectId);

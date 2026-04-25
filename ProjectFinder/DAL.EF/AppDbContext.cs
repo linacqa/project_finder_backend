@@ -17,7 +17,6 @@ public class AppDbContext : IdentityDbContext<AppUser, AppRole, Guid, IdentityUs
     public DbSet<Folder> Folders { get; set; } = default!;
     public DbSet<FolderTag> FolderTags { get; set; } = default!;
     public DbSet<Group> Groups { get; set; } = default!;
-    public DbSet<GroupProject> GroupProjects { get; set; } = default!;
     public DbSet<Invitation> Invitations { get; set; } = default!;
     public DbSet<Notification> Notifications { get; set; } = default!;
     public DbSet<Project> Projects { get; set; } = default!;

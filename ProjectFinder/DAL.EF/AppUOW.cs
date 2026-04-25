@@ -26,10 +26,6 @@ public class AppUOW : BaseUOW<AppDbContext>, IAppUOW
     public IFolderTagRepository FolderTagRepository =>
         _folderTagRepository ??= new FolderTagRepository(UOWDbContext);
     
-    private IGroupProjectRepository? _groupProjectRepository;
-    public IGroupProjectRepository GroupProjectRepository =>
-        _groupProjectRepository ??= new GroupProjectRepository(UOWDbContext);
-    
     private IGroupRepository? _groupRepository;
     public IGroupRepository GroupRepository =>
         _groupRepository ??= new GroupRepository(UOWDbContext);

@@ -18,5 +18,4 @@ public class Group : IDomainId
     public ICollection<Application>? Applications { get; set; }
     public ICollection<Invitation>? Invitations { get; set; }
     public ICollection<UserGroup>? UserGroups { get; set; }
-    public ICollection<GroupProject>? GroupProjects { get; set; }
 }

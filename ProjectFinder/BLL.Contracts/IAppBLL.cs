@@ -8,7 +8,6 @@ public interface IAppBLL : IBaseBLL
     ICommentService CommentService { get; }
     IFolderService FolderService { get; }
     IFolderTagService FolderTagService { get; }
-    IGroupProjectService GroupProjectService { get; }
     IGroupService GroupService { get; }
     IInvitationService InvitationService { get; }
     INotificationService NotificationService { get; }

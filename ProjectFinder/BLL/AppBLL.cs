@@ -40,13 +40,6 @@ public class AppBLL : BaseBLL<IAppUOW>, IAppBLL
             new FolderTagBLLMapper()
         );
     
-    private IGroupProjectService? _groupProjectService;
-    public IGroupProjectService GroupProjectService =>
-        _groupProjectService ??= new GroupProjectService(
-            BLLUOW, 
-            new GroupProjectBLLMapper()
-        );
-    
     private IGroupService? _groupService;
     public IGroupService GroupService =>
         _groupService ??= new GroupService(

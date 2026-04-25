@@ -41,6 +41,5 @@ public class Project : IDomainId
     public ICollection<Application>? Applications { get; set; }
     public ICollection<Invitation>? Invitations { get; set; }
     public ICollection<ProjectStep>? ProjectSteps { get; set; }
-    public ICollection<GroupProject>? GroupProjects { get; set; }
     public ICollection<UserProject>? UserProjects { get; set; }
 }

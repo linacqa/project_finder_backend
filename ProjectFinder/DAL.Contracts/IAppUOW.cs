@@ -8,7 +8,6 @@ public interface IAppUOW : IBaseUOW
     ICommentRepository CommentRepository { get; }
     IFolderRepository FolderRepository { get; }
     IFolderTagRepository FolderTagRepository { get; }
-    IGroupProjectRepository GroupProjectRepository { get; }
     IGroupRepository GroupRepository { get; }
     IInvitationRepository InvitationRepository { get; }
     INotificationRepository NotificationRepository { get; }
