@@ -9,12 +9,14 @@ namespace BLL.Services;
 public class ApplicationService : BaseService<BLL.DTO.Application, DAL.DTO.Application, DAL.Contracts.IApplicationRepository>, IApplicationService
 {
     private readonly IUserProjectRepository _userProjectRepository;
+    private readonly IProjectRepository _projectRepository;
     
     public ApplicationService(
         IAppUOW serviceUOW, 
         IMapper<Application, DAL.DTO.Application, Guid> mapper) : base(serviceUOW, serviceUOW.ApplicationRepository, mapper)
     {
         _userProjectRepository = serviceUOW.UserProjectRepository;
+        _projectRepository = serviceUOW.ProjectRepository;
     }
 
     public async Task<BLL.DTO.Application?> FindAsyncByProjectId(Guid projectId, Guid userId)
@@ -59,7 +61,16 @@ public class ApplicationService : BaseService<BLL.DTO.Application, DAL.DTO.Appli
 
     public async Task AddWithValidationAsync(Application entity, Guid userId = default)
     {
-        // TODO: check that the project status is open
+        var project = await _projectRepository.FindAsync(entity.ProjectId, userId);
+        if (project == null)
+        {
+            throw new InvalidOperationException("Project not found.");
+        }
+        if (project.ProjectStatusId != Guid.Parse("00000000-0000-0000-0000-000000000002")) // open
+        {
+            throw new InvalidOperationException("Cannot apply to a project that is not open.");
+        }
+        
         var existing = await FindAsyncByProjectId(entity.ProjectId, userId);
         if (existing != null)
         {

@@ -11,14 +11,14 @@ public static class InitialData
             ("teacher", null),
         ];
 
-    // TODO: Change before deploying to production
+    // TODO: Change to empty before deploying to production
     public static readonly (string name, string firstName, string lastName, string password, Guid? id, string[] roles)[]
         Users =
         [
-            ("admin@taltech.ee", "admin", "taltech", "Foo.Bar.1", null, ["admin"]),
-            ("user@taltech.ee", "user", "taltech", "Foo.Bar.2", null, ["user"]),
-            ("student@taltech.ee", "student", "taltech", "Foo.Bar.3", null, ["student"]),
-            ("teacher@taltech.ee", "teacher", "taltech", "Foo.Bar.4", null, ["teacher"]),
+            // ("admin@taltech.ee", "admin", "taltech", "Foo.Bar.1", null, ["admin"]),
+            // ("user@taltech.ee", "user", "taltech", "Foo.Bar.2", null, ["user"]),
+            // ("student@taltech.ee", "student", "taltech", "Foo.Bar.3", null, ["student"]),
+            // ("teacher@taltech.ee", "teacher", "taltech", "Foo.Bar.4", null, ["teacher"]),
         ];
     
     public static readonly (string name, bool isVisible)[] Folders =

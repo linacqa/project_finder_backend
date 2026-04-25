@@ -166,15 +166,15 @@ namespace WebApp.ApiControllers
             }
 
             var admins = await _userManager.GetUsersInRoleAsync("admin");
-            // var recipients = admins
-            //     .Where(u => !string.IsNullOrWhiteSpace(u.Email))
-            //     .Select(u => u.Email!)
-            //     .Distinct(StringComparer.OrdinalIgnoreCase)
-            //     .ToList();
+            var recipients = admins
+                .Where(u => !string.IsNullOrWhiteSpace(u.Email))
+                .Select(u => u.Email!)
+                .Distinct(StringComparer.OrdinalIgnoreCase)
+                .ToList();
             // TODO: change to admins emails before prod
-            var recipients = new List<string>()
-            {
-            };
+            // var recipients = new List<string>()
+            // {
+            // };
 
             if (recipients.Count == 0)
             {

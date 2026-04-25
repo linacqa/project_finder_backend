@@ -22,7 +22,7 @@ public class ApplicationRepository : BaseRepository<Application, Domain.Applicat
 
         if (userId != default)
         {
-            query = query.Where(e => e.UserId.Equals(userId));
+            query = query.Where(e => e.UserId.Equals(userId) || (e.Group != null && e.Group.UserGroups != null && e.Group.UserGroups.Any(ug => ug.UserId.Equals(userId))));
         }
         return query.ToList()
             .Select(e => Mapper.Map(e)!);
@@ -37,7 +37,7 @@ public class ApplicationRepository : BaseRepository<Application, Domain.Applicat
             .Include(e => e.Project);
         if (userId != default)  
         {
-            query = query.Where(e => e.UserId.Equals(userId));
+            query = query.Where(e => e.UserId.Equals(userId) || (e.Group != null && e.Group.UserGroups != null && e.Group.UserGroups.Any(ug => ug.UserId.Equals(userId))));
         }
         return (await query.ToListAsync())
             .Select(e => Mapper.Map(e)!);

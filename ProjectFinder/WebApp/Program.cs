@@ -97,15 +97,24 @@ builder.Services.AddScoped<IUserNameResolver, UserNameResolver>();
 builder.Services.Configure<SmtpOptions>(builder.Configuration.GetSection(SmtpOptions.SectionName));
 builder.Services.AddScoped<IEmailService, SmtpEmailService>();
 
-// TODO: change before production
+// TODO: review before production
+// builder.Services.AddCors(options =>
+// {
+//     options.AddPolicy("CorsAllowAll", policy =>
+//     {
+//         policy.AllowAnyHeader();
+//         policy.AllowAnyMethod();
+//         policy.AllowAnyOrigin();
+//         policy.SetIsOriginAllowed((host) => true);
+//     });
+// });
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("CorsAllowAll", policy =>
+    options.AddPolicy("CorsAllowFrontend", policy =>
     {
         policy.AllowAnyHeader();
         policy.AllowAnyMethod();
-        policy.AllowAnyOrigin();
-        policy.SetIsOriginAllowed((host) => true);
+        policy.WithOrigins("http://localhost:3000", "https://localhost:3000");
     });
 });
 
@@ -150,7 +159,8 @@ else
 
 app.UseRouting();
 
-app.UseCors("CorsAllowAll");
+// app.UseCors("CorsAllowAll");
+app.UseCors("CorsAllowFrontend");
 
 app.UseAuthorization();
 
