@@ -15,7 +15,7 @@ COPY Base.DAL.Contracts/*.csproj ./Base.DAL.Contracts/
 COPY Base.DAL.EF/*.csproj ./Base.DAL.EF/
 COPY Base.Domain/*.csproj ./Base.Domain/
 COPY Base.DTO/*.csproj ./Base.DTO/
-COPY Base.Resources/*.csproj ./Base.Resources/
+COPY Base.Helpers/*.csproj ./Base.Helpers/
 
 COPY BLL/*.csproj ./BLL/
 COPY BLL.Contracts/*.csproj ./BLL.Contracts/
@@ -25,7 +25,6 @@ COPY DAL.DTO/*.csproj ./DAL.DTO/
 COPY DAL.EF/*.csproj ./DAL.EF/
 COPY DTO/*.csproj ./DTO/
 COPY Domain/*.csproj ./Domain/
-#COPY App.Resources/*.csproj ./App.Resources/
 #COPY App.Tests/*.csproj ./App.Tests/
 
 COPY WebApp/*.csproj ./WebApp/
@@ -42,7 +41,7 @@ COPY Base.DAL.Contracts/. ./Base.DAL.Contracts/
 COPY Base.DAL.EF/. ./Base.DAL.EF/
 COPY Base.Domain/. ./Base.Domain/
 COPY Base.DTO/. ./Base.DTO/
-COPY Base.Resources/. ./Base.Resources/
+COPY Base.Helpers/. ./Base.Helpers/
 
 COPY BLL/. ./BLL/
 COPY BLL.Contracts/. ./BLL.Contracts/
@@ -52,7 +51,6 @@ COPY DAL.DTO/. ./DAL.DTO/
 COPY DAL.EF/. ./DAL.EF/
 COPY DTO/. ./DTO/
 COPY Domain/. ./Domain/
-#COPY Resources/. ./Resources/
 #COPY Tests/. ./Tests/
 
 COPY WebApp/. ./WebApp/

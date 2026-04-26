@@ -175,8 +175,7 @@ app.UseSwaggerUI(options =>
                 description.GroupName.ToUpperInvariant()
             );
         }
-        // serve from root
-        options.RoutePrefix = string.Empty;
+        options.RoutePrefix = "swagger";
     }
 );
 
