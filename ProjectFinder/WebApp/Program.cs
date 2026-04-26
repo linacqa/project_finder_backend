@@ -162,6 +162,7 @@ app.UseRouting();
 // app.UseCors("CorsAllowAll");
 app.UseCors("CorsAllowFrontend");
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.UseSwagger();
@@ -185,7 +186,7 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
 }
 
-app.UseHttpsRedirection();
+// app.UseHttpsRedirection();
 
 app.MapControllers();
 
@@ -234,7 +235,7 @@ static void SetupAppData(IApplicationBuilder app, IWebHostEnvironment env, IConf
     if (configuration.GetValue<bool>("DataInitialization:SeedIdentity"))
     {
         logger.LogInformation("SeedIdentity");
-        AppDataInit.SeedIdentity(userManager, roleManager);
+        AppDataInit.SeedIdentity(userManager, roleManager, configuration);
     }
 
     if (configuration.GetValue<bool>("DataInitialization:SeedData"))

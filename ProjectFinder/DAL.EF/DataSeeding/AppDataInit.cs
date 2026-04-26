@@ -1,6 +1,7 @@
 ﻿using Domain.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
 namespace DAL.EF.DataSeeding;
 
@@ -27,7 +28,7 @@ public static class AppDataInit
         context.Database.EnsureDeleted();
     }
 
-    public static void SeedIdentity(UserManager<AppUser> userManager, RoleManager<AppRole> roleManager)
+    public static void SeedIdentity(UserManager<AppUser> userManager, RoleManager<AppRole> roleManager, IConfiguration configuration)
     {
         foreach (var (roleName, id) in InitialData.Roles)
         {
@@ -89,6 +90,41 @@ public static class AppDataInit
                 else
                 {
                     Console.WriteLine($"User {user.UserName} added to role {role}");
+                }
+            }
+        }
+
+        var adminEmail = configuration["ADMIN_EMAIL"];
+        var adminPassword = configuration["ADMIN_PASSWORD"];
+        var adminFirstName = configuration["ADMIN_FIRSTNAME"] ?? "Admin";
+        var adminLastName = configuration["ADMIN_LASTNAME"] ?? "User";
+
+        if (!string.IsNullOrEmpty(adminEmail) && !string.IsNullOrEmpty(adminPassword))
+        {
+            var admin = userManager.FindByEmailAsync(adminEmail).Result;
+            if (admin == null)
+            {
+                admin = new AppUser()
+                {
+                    Id = Guid.NewGuid(),
+                    Email = adminEmail,
+                    EmailConfirmed = true,
+                    UserName = adminEmail,
+                    FirstName = adminFirstName,
+                    LastName = adminLastName,
+                };
+                
+                var result = userManager.CreateAsync(admin, adminPassword).Result;
+                if (!result.Succeeded)
+                {
+                    Console.WriteLine("Failed to create admin user: " + string.Join(",", result.Errors.Select(e => e.Description)));
+                    return;
+                }
+                var roleName = "admin";
+
+                if (!userManager.IsInRoleAsync(admin, roleName).Result)
+                {
+                    userManager.AddToRoleAsync(admin, roleName).Wait();
                 }
             }
         }
