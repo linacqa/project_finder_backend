@@ -14,7 +14,7 @@ public class InvitationRepository : BaseRepository<Invitation, Domain.Invitation
     
     public async Task<IEnumerable<Invitation>> AllAsyncToUser(Guid userId = default!)
     {
-        return (await GetQuery(userId)
+        return (await RepositoryDbSet.AsQueryable()
                 .Where(e => e.ToUserId == userId)
                 .Include(e => e.ToUser)
                 .Include(e => e.User)
@@ -27,7 +27,7 @@ public class InvitationRepository : BaseRepository<Invitation, Domain.Invitation
     
     public async Task<IEnumerable<Invitation>> AllAsyncByGroupId(Guid groupId, Guid userId = default)
     {
-        return (await GetQuery(userId)
+        return (await RepositoryDbSet.AsQueryable()
                 .Where(e => e.GroupId == groupId)
                 .Include(e => e.ToUser)
                 .Include(e => e.User)
@@ -36,5 +36,17 @@ public class InvitationRepository : BaseRepository<Invitation, Domain.Invitation
                         .ThenInclude(u => u.User)
                 .ToListAsync())
             .Select(e => Mapper.Map(e)!);
+    }
+    
+    public override DAL.DTO.Invitation? Update(DAL.DTO.Invitation entity, Guid userId = default!)
+    {
+        return Mapper.Map(RepositoryDbSet.Update(Mapper.Map(entity)!).Entity)!;
+    }
+
+    public override async Task<DAL.DTO.Invitation?> UpdateAsync(DAL.DTO.Invitation entity, Guid userId = default!)
+    {
+        var domainEntity = Mapper.Map(entity)!;
+
+        return Mapper.Map(RepositoryDbSet.Update(domainEntity).Entity)!;
     }
 }

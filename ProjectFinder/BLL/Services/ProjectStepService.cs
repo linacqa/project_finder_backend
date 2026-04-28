@@ -17,11 +17,11 @@ public class ProjectStepService : BaseService<BLL.DTO.ProjectStep, DAL.DTO.Proje
         _userProjectRepository = serviceUOW.UserProjectRepository;
     }
     
-    public async Task<IEnumerable<BLL.DTO.ProjectStep>> AllAsyncByProjectId(Guid projectId, Guid userId)
+    public async Task<IEnumerable<BLL.DTO.ProjectStep>> AllAsyncByProjectId(Guid projectId, Guid userId, bool isAdmin)
     {
         var userInProject = await _userProjectRepository.UserInProject(projectId, userId);
         
-        if (!userInProject)
+        if (!userInProject && !isAdmin)
         {
             throw new UnauthorizedAccessException("User is not part of the project.");
         }

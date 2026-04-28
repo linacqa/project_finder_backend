@@ -17,11 +17,11 @@ public class CommentService : BaseService<BLL.DTO.Comment, DAL.DTO.Comment, DAL.
         _userProjectRepository = serviceUOW.UserProjectRepository;
     }
     
-    public async Task<IEnumerable<BLL.DTO.Comment>> AllAsyncByProjectId(Guid projectId, Guid userId)
+    public async Task<IEnumerable<BLL.DTO.Comment>> AllAsyncByProjectId(Guid projectId, Guid userId, bool isAdmin)
     {
         var userInProject = await _userProjectRepository.UserInProject(projectId, userId);
         
-        if (!userInProject)
+        if (!userInProject && !isAdmin)
         {
             throw new UnauthorizedAccessException("User is not part of the project.");
         }
@@ -30,11 +30,11 @@ public class CommentService : BaseService<BLL.DTO.Comment, DAL.DTO.Comment, DAL.
         return entities.Select(e => Mapper.Map(e)!).ToList();
     }
     
-    public async Task AddAsync(BLL.DTO.Comment entity, Guid userId = default)
+    public async Task AddAsync(BLL.DTO.Comment entity, Guid userId, bool isAdmin)
     {
         var userInProject = await _userProjectRepository.UserInProject(entity.ProjectId, userId);
         
-        if (!userInProject)
+        if (!userInProject && !isAdmin)
         {
             throw new UnauthorizedAccessException("User is not part of the project.");
         }

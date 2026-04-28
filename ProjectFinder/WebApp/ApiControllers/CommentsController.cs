@@ -33,9 +33,10 @@ namespace WebApp.ApiControllers
         [HttpGet("project/{projectId}")]
         public async Task<ActionResult<IEnumerable<DTO.v1.Comment>>> GetCommentsByProjectId(Guid projectId)
         {
+            var isAdmin = User.IsInRole("admin");
             try
             {
-                var comments = await _bll.CommentService.AllAsyncByProjectId(projectId, User.GetUserId());
+                var comments = await _bll.CommentService.AllAsyncByProjectId(projectId, User.GetUserId(), isAdmin);
 
                 return comments.Select(c => _mapper.Map(c)!).ToList();
             }
@@ -80,10 +81,11 @@ namespace WebApp.ApiControllers
         public async Task<ActionResult<DTO.v1.Comment>> PostComment(CommentCreateUpdate comment)
         {
             var bllComment = _mapper.Map(comment);
+            var isAdmin = User.IsInRole("admin");
         
             try
             {
-                await _bll.CommentService.AddAsync(bllComment, User.GetUserId());
+                await _bll.CommentService.AddAsync(bllComment, User.GetUserId(), isAdmin);
                 await _bll.SaveChangesAsync();
             } catch (UnauthorizedAccessException e)
             {

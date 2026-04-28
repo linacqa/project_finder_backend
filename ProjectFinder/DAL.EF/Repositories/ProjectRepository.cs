@@ -41,12 +41,13 @@ public class ProjectRepository : BaseRepository<Project, Domain.Project>, IProje
                     && p.TitleInEnglish.ToLower().Contains(request.Title.ToLower())));
         }
 
-        if (request.MinStudents.HasValue)
+        if (request.MinStudents.HasValue && request.MaxStudents.HasValue)
         {
-            query = query.Where(p => p.MinStudents <= request.MinStudents.Value && p.MaxStudents >= request.MinStudents.Value);
-        }
-
-        if (request.MaxStudents.HasValue)
+            query = query.Where(p => p.MinStudents >= request.MinStudents.Value && p.MaxStudents <= request.MaxStudents.Value);
+        } else if (request.MinStudents.HasValue)
+        {
+            query = query.Where(p => p.MinStudents >= request.MinStudents.Value);
+        } else if (request.MaxStudents.HasValue)
         {
             query = query.Where(p => p.MaxStudents <= request.MaxStudents.Value);
         }
@@ -77,6 +78,7 @@ public class ProjectRepository : BaseRepository<Project, Domain.Project>, IProje
                 .ThenInclude(up => up.User)
                 .Include(p => p.UserProjects)!
                 .ThenInclude(up => up.UserProjectRole)
+                .OrderByDescending(p => p.CreatedAt)
             .Skip((request.Page - 1) * request.PageSize)
             .Take(request.PageSize)
             .ToListAsync())

@@ -126,13 +126,14 @@ public class ProjectService : BaseService<BLL.DTO.Project, DAL.DTO.Project, DAL.
         
         if (entity.StepIds.Count > 0)
         {
-            foreach (var stepId in entity.StepIds)
+            foreach (var stepId in entity.StepIds.Select((value, i) => new { value, i }))
             {
                 _projectStepRepository.Add(new DAL.DTO.ProjectStep()
                 {
-                    StepId = stepId,
+                    StepId = stepId.value,
                     ProjectId = dalEntity!.Id,
                     StepStatusId = NotStartedStepStatusId, // not started
+                    Order = stepId.i
                 });
             }
         }
@@ -241,13 +242,18 @@ public class ProjectService : BaseService<BLL.DTO.Project, DAL.DTO.Project, DAL.
         }
 
         var existingStepIds = existingProjectSteps.Select(e => e.StepId).ToHashSet();
-        foreach (var stepId in newStepIds.Where(id => !existingStepIds.Contains(id)))
+        foreach (var stepId in newStepIds.Select((value, i) => new { value, i }))
         {
+            if (existingStepIds.Contains(stepId.value))
+            {
+                continue;
+            }
             _projectStepRepository.Add(new DAL.DTO.ProjectStep()
             {
-                StepId = stepId,
+                StepId = stepId.value,
                 ProjectId = dalEntity.Id,
                 StepStatusId = NotStartedStepStatusId, // not started
+                Order = stepId.i
             });
         }
 
