@@ -108,15 +108,15 @@ builder.Services.AddScoped<IEmailService, SmtpEmailService>();
 //         policy.SetIsOriginAllowed((host) => true);
 //     });
 // });
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("CorsAllowFrontend", policy =>
-    {
-        policy.AllowAnyHeader();
-        policy.AllowAnyMethod();
-        policy.WithOrigins("http://localhost:3000", "https://localhost:3000");
-    });
-});
+// builder.Services.AddCors(options =>
+// {
+//     options.AddPolicy("CorsAllowFrontend", policy =>
+//     {
+//         policy.AllowAnyHeader();
+//         policy.AllowAnyMethod();
+//         policy.WithOrigins("http://localhost:3000", "https://localhost:3000");
+//     });
+// });
 
 var apiVersioningBuilder = builder.Services.AddApiVersioning(options =>
 {
@@ -160,7 +160,7 @@ else
 app.UseRouting();
 
 // app.UseCors("CorsAllowAll");
-app.UseCors("CorsAllowFrontend");
+// app.UseCors("CorsAllowFrontend");
 
 app.UseAuthentication();
 app.UseAuthorization();

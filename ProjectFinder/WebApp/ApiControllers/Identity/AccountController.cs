@@ -257,96 +257,96 @@ public class AccountController : ControllerBase
         return Ok(responseData);
     }
 
-    /// <summary>
-    /// User authentication via Azure, returns JWT and refresh token
-    /// </summary>
-    /// <param name="loginInfo">Azure login model</param>
-    /// <param name="jwtExpiresInSeconds">Optional, use custom jwt expiration</param>
-    /// <param name="refreshTokenExpiresInSeconds">Optional, use custom refresh token expiration</param>
-    /// <returns>JWT and refresh token</returns>
-    [HttpPost]
-    [ProducesResponseType(typeof(JWTResponse), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(Message), StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult<JWTResponse>> LoginWithAzure(
-        [FromBody] AzureLoginInfo loginInfo,
-        [FromQuery] int? jwtExpiresInSeconds,
-        [FromQuery] int? refreshTokenExpiresInSeconds
-    )
-    {
-        // Validate Azure JWT
-        var handler = new JwtSecurityTokenHandler();
-        JwtSecurityToken azureJwt;
-
-        try
-        {
-            azureJwt = handler.ReadJwtToken(loginInfo.AccessToken);
-        }
-        catch
-        {
-            return BadRequest(new Message("Invalid Azure token"));
-        }
-
-        // Get claims from Azure JWT
-        var azureObjectId = azureJwt.Claims.FirstOrDefault(c => c.Type == "oid")?.Value;
-        var email = azureJwt.Claims.FirstOrDefault(c =>
-            c.Type == ClaimTypes.Email || c.Type == "preferred_username")?.Value;
-        var fullName = azureJwt.Claims.FirstOrDefault(c => c.Type == "name")?.Value;
-
-        if (azureObjectId == null || email == null)
-        {
-            return BadRequest(new Message("Invalid Azure claims"));
-        }
-
-        // Search for existing user by Azure Object ID
-        var appUser = await _context.Users
-            .Include(u => u.RefreshTokens)
-            .FirstOrDefaultAsync(u => u.AzureObjectId == azureObjectId);
-
-        // If not found, create new user
-        if (appUser == null)
-        {
-            appUser = new AppUser
-            {
-                Email = email,
-                UserName = email,
-                FirstName = fullName?.Split(' ').FirstOrDefault(),
-                LastName = fullName?.Split(' ').Skip(1).FirstOrDefault(),
-                AzureObjectId = azureObjectId,
-                AuthType = AuthType.AzureAD
-            };
-
-            await _userManager.CreateAsync(appUser);
-        }
-
-        // Refresh token
-        var refreshToken = new AppRefreshToken
-        {
-            UserId = appUser.Id,
-            Expiration = GetExpirationDateTime(
-                refreshTokenExpiresInSeconds,
-                SettingsJWTRefreshTokenExpiresInSeconds)
-        };
-
-        _context.RefreshTokens.Add(refreshToken);
-        await _context.SaveChangesAsync();
-
-        // Generate JWT
-        var claimsPrincipal = await _signInManager.CreateUserPrincipalAsync(appUser);
-
-        var jwt = IdentityExtensions.GenerateJwt(
-            claimsPrincipal.Claims,
-            _configuration.GetValue<string>(SettingsJWTKey)!,
-            _configuration.GetValue<string>(SettingsJWTIssuer)!,
-            _configuration.GetValue<string>(SettingsJWTAudience)!,
-            GetExpirationDateTime(jwtExpiresInSeconds, SettingsJWTExpiresInSeconds)
-        );
-
-        return Ok(new JWTResponse
-        {
-            JWT = jwt,
-            RefreshToken = refreshToken.RefreshToken
-        });
-    }
+    // /// <summary>
+    // /// User authentication via Azure, returns JWT and refresh token
+    // /// </summary>
+    // /// <param name="loginInfo">Azure login model</param>
+    // /// <param name="jwtExpiresInSeconds">Optional, use custom jwt expiration</param>
+    // /// <param name="refreshTokenExpiresInSeconds">Optional, use custom refresh token expiration</param>
+    // /// <returns>JWT and refresh token</returns>
+    // [HttpPost]
+    // [ProducesResponseType(typeof(JWTResponse), StatusCodes.Status200OK)]
+    // [ProducesResponseType(typeof(Message), StatusCodes.Status400BadRequest)]
+    // public async Task<ActionResult<JWTResponse>> LoginWithAzure(
+    //     [FromBody] AzureLoginInfo loginInfo,
+    //     [FromQuery] int? jwtExpiresInSeconds,
+    //     [FromQuery] int? refreshTokenExpiresInSeconds
+    // )
+    // {
+    //     // Validate Azure JWT
+    //     var handler = new JwtSecurityTokenHandler();
+    //     JwtSecurityToken azureJwt;
+    //
+    //     try
+    //     {
+    //         azureJwt = handler.ReadJwtToken(loginInfo.AccessToken);
+    //     }
+    //     catch
+    //     {
+    //         return BadRequest(new Message("Invalid Azure token"));
+    //     }
+    //
+    //     // Get claims from Azure JWT
+    //     var azureObjectId = azureJwt.Claims.FirstOrDefault(c => c.Type == "oid")?.Value;
+    //     var email = azureJwt.Claims.FirstOrDefault(c =>
+    //         c.Type == ClaimTypes.Email || c.Type == "preferred_username")?.Value;
+    //     var fullName = azureJwt.Claims.FirstOrDefault(c => c.Type == "name")?.Value;
+    //
+    //     if (azureObjectId == null || email == null)
+    //     {
+    //         return BadRequest(new Message("Invalid Azure claims"));
+    //     }
+    //
+    //     // Search for existing user by Azure Object ID
+    //     var appUser = await _context.Users
+    //         .Include(u => u.RefreshTokens)
+    //         .FirstOrDefaultAsync(u => u.AzureObjectId == azureObjectId);
+    //
+    //     // If not found, create new user
+    //     if (appUser == null)
+    //     {
+    //         appUser = new AppUser
+    //         {
+    //             Email = email,
+    //             UserName = email,
+    //             FirstName = fullName?.Split(' ').FirstOrDefault(),
+    //             LastName = fullName?.Split(' ').Skip(1).FirstOrDefault(),
+    //             AzureObjectId = azureObjectId,
+    //             AuthType = AuthType.AzureAD
+    //         };
+    //
+    //         await _userManager.CreateAsync(appUser);
+    //     }
+    //
+    //     // Refresh token
+    //     var refreshToken = new AppRefreshToken
+    //     {
+    //         UserId = appUser.Id,
+    //         Expiration = GetExpirationDateTime(
+    //             refreshTokenExpiresInSeconds,
+    //             SettingsJWTRefreshTokenExpiresInSeconds)
+    //     };
+    //
+    //     _context.RefreshTokens.Add(refreshToken);
+    //     await _context.SaveChangesAsync();
+    //
+    //     // Generate JWT
+    //     var claimsPrincipal = await _signInManager.CreateUserPrincipalAsync(appUser);
+    //
+    //     var jwt = IdentityExtensions.GenerateJwt(
+    //         claimsPrincipal.Claims,
+    //         _configuration.GetValue<string>(SettingsJWTKey)!,
+    //         _configuration.GetValue<string>(SettingsJWTIssuer)!,
+    //         _configuration.GetValue<string>(SettingsJWTAudience)!,
+    //         GetExpirationDateTime(jwtExpiresInSeconds, SettingsJWTExpiresInSeconds)
+    //     );
+    //
+    //     return Ok(new JWTResponse
+    //     {
+    //         JWT = jwt,
+    //         RefreshToken = refreshToken.RefreshToken
+    //     });
+    // }
 
     /// <summary>
     /// Renew JWT using refresh token
