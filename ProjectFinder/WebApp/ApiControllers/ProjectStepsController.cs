@@ -86,11 +86,13 @@ namespace WebApp.ApiControllers
             {
                 return NotFound();
             }
+            
+            var isAdmin = User.IsInRole("admin");
 
             try
             {
                 projectStepFound.StepStatusId = projectStep.StepStatusId;
-                await _bll.ProjectStepService.UpdateAsync(projectStepFound, User.GetUserId());
+                await _bll.ProjectStepService.UpdateAsync(projectStepFound, User.GetUserId(), isAdmin);
                 await _bll.SaveChangesAsync();
             }
             catch (UnauthorizedAccessException e)

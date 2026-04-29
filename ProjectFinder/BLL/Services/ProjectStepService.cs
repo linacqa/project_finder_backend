@@ -30,11 +30,11 @@ public class ProjectStepService : BaseService<BLL.DTO.ProjectStep, DAL.DTO.Proje
         return entities.Select(e => Mapper.Map(e)!).ToList();
     }
     
-    public override async Task<BLL.DTO.ProjectStep?> UpdateAsync(BLL.DTO.ProjectStep entity, Guid userId = default)
+    public async Task<BLL.DTO.ProjectStep?> UpdateAsync(BLL.DTO.ProjectStep entity, Guid userId, bool isAdmin)
     {
         var userInProject = await _userProjectRepository.UserInProject(entity.ProjectId, userId);
         
-        if (!userInProject)
+        if (!userInProject && !isAdmin)
         {
             throw new UnauthorizedAccessException("User is not part of the project.");
         }

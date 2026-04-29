@@ -68,7 +68,7 @@ namespace WebApp.ApiControllers
         public async Task<ActionResult<IEnumerable<DTO.v1.Identity.SupervisorInfo>>> GetSupervisors()
         {
             var appUsers = await _context.Users
-                .Where(u => u.UserRoles.Any(ur => ur.Role.Name.Equals("teacher")))
+                .Where(u => u.UserRoles.Any(ur => ur.Role.Name.Equals("teacher") || ur.Role.Name.Equals("admin")))
                 .ToListAsync();
             
             return Ok(appUsers.Select(u => new SupervisorInfo()
