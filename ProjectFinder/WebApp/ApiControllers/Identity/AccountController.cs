@@ -58,7 +58,7 @@ public class AccountController : ControllerBase
     }
 
     /// <summary>
-    /// Register new user, returns JWT and refresh token
+    /// Register new user
     /// </summary>
     /// <param name="registrationData">Registration info</param>
     /// <param name="jwtExpiresInSeconds">Optional custom jwt expiration</param>
@@ -66,10 +66,10 @@ public class AccountController : ControllerBase
     /// <returns></returns>
     [Produces("application/json")]
     [Consumes("application/json")]
-    [ProducesResponseType(typeof(JWTResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(Message), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(Message), StatusCodes.Status400BadRequest)]
     [HttpPost]
-    public async Task<ActionResult<JWTResponse>> Register(
+    public async Task<ActionResult<Message>> Register(
         [FromBody] RegisterInfo registrationData,
         [FromQuery] int? jwtExpiresInSeconds,
         [FromQuery] int? refreshTokenExpiresInSeconds)
@@ -176,27 +176,31 @@ public class AccountController : ControllerBase
             _configuration.GetValue<string>(SettingsJWTAudience)!,
             GetExpirationDateTime(jwtExpiresInSeconds, SettingsJWTExpiresInSeconds)
         );
-        var res = new JWTResponse()
-        {
-            JWT = jwt,
-            RefreshToken = refreshToken.RefreshToken,
-        };
-        return Ok(res);
+        
+        SetAuthCookies(jwt, refreshToken.RefreshToken);
+        
+        // var res = new JWTResponse()
+        // {
+        //     JWT = jwt,
+        //     RefreshToken = refreshToken.RefreshToken,
+        // };
+        // return Ok(res);
+        return Ok(new Message(["Registered and logged in"]));
     }
 
     /// <summary>
-    /// User authentication, returns JWT and refresh token
+    /// User authentication
     /// </summary>
     /// <param name="loginInfo">Login model</param>
     /// <param name="jwtExpiresInSeconds">Optional, use custom jwt expiration</param>
     /// <param name="refreshTokenExpiresInSeconds">Optional, use custom refresh token expiration</param>
-    /// <returns>JWT and refresh token</returns>
+    /// <returns></returns>
     [Produces("application/json")]
     [Consumes("application/json")]
-    [ProducesResponseType(typeof(JWTResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(Message), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(Message), StatusCodes.Status404NotFound)]
     [HttpPost]
-    public async Task<ActionResult<JWTResponse>> Login(
+    public async Task<ActionResult<Message>> Login(
         [FromBody] LoginInfo loginInfo,
         [FromQuery] int? jwtExpiresInSeconds,
         [FromQuery] int? refreshTokenExpiresInSeconds
@@ -247,14 +251,17 @@ public class AccountController : ControllerBase
             _configuration.GetValue<string>(SettingsJWTAudience)!,
             GetExpirationDateTime(jwtExpiresInSeconds, SettingsJWTExpiresInSeconds)
         );
+        
+        SetAuthCookies(jwt, refreshToken.RefreshToken);
 
-        var responseData = new JWTResponse()
-        {
-            JWT = jwt,
-            RefreshToken = refreshToken.RefreshToken
-        };
-
-        return Ok(responseData);
+        // var responseData = new JWTResponse()
+        // {
+        //     JWT = jwt,
+        //     RefreshToken = refreshToken.RefreshToken
+        // };
+        //
+        // return Ok(responseData);
+        return Ok(new Message(["Logged in"]));
     }
 
     // /// <summary>
@@ -357,21 +364,29 @@ public class AccountController : ControllerBase
     /// <returns></returns>
     [Produces("application/json")]
     [Consumes("application/json")]
-    [ProducesResponseType(typeof(JWTResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(Message), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(Message), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
     [HttpPost]
-    public async Task<ActionResult<JWTResponse>> RenewRefreshToken(
-        [FromBody] TokenRefreshInfo tokenRefreshInfo,
+    public async Task<ActionResult<Message>> RenewRefreshToken(
+        // [FromBody] TokenRefreshInfo tokenRefreshInfo,
         [FromQuery] int? jwtExpiresInSeconds,
         [FromQuery] int? refreshTokenExpiresInSeconds
     )
     {
+        var oldJWT = Request.Cookies["accessToken"];
+        var oldRefreshToken = Request.Cookies["refreshToken"];
+
+        if (oldJWT == null || oldRefreshToken == null)
+        {
+            return BadRequest(new Message("No token"));
+        }
+
         JwtSecurityToken jwtToken;
         // get user info from jwt
         try
         {
-            jwtToken = new JwtSecurityTokenHandler().ReadJwtToken(tokenRefreshInfo.Jwt);
+            jwtToken = new JwtSecurityTokenHandler().ReadJwtToken(oldJWT);
             if (jwtToken == null)
             {
                 return BadRequest(new Message("No token"));
@@ -384,7 +399,7 @@ public class AccountController : ControllerBase
 
         // validate jwt, ignore expiration date
         if (!IdentityExtensions.ValidateJWT(
-                tokenRefreshInfo.Jwt,
+                oldJWT,
                 _configuration.GetValue<string>(SettingsJWTKey)!,
                 _configuration.GetValue<string>(SettingsJWTIssuer)!,
                 _configuration.GetValue<string>(SettingsJWTAudience)!
@@ -411,8 +426,8 @@ public class AccountController : ControllerBase
         var matchingTokens = await _context.RefreshTokens
             .Where(x =>
                 x.UserId == appUser.Id &&
-                ((x.RefreshToken == tokenRefreshInfo.RefreshToken && x.Expiration > DateTime.UtcNow) ||
-                 (x.PreviousRefreshToken == tokenRefreshInfo.RefreshToken && x.PreviousExpiration > DateTime.UtcNow))
+                ((x.RefreshToken == oldRefreshToken && x.Expiration > DateTime.UtcNow) ||
+                 (x.PreviousRefreshToken == oldRefreshToken && x.PreviousExpiration > DateTime.UtcNow))
             )
             .ToListAsync();
 
@@ -448,7 +463,7 @@ public class AccountController : ControllerBase
 
         // make new refresh token, obsolete old ones
         var refreshToken = matchingTokens.First();
-        if (refreshToken.RefreshToken == tokenRefreshInfo.RefreshToken)
+        if (refreshToken.RefreshToken == oldRefreshToken)
         {
             _context.Attach(refreshToken);
             refreshToken.PreviousRefreshToken = refreshToken.RefreshToken;
@@ -461,13 +476,17 @@ public class AccountController : ControllerBase
             await _context.SaveChangesAsync();
         }
 
-        var res = new JWTResponse()
-        {
-            JWT = jwt,
-            RefreshToken = refreshToken.RefreshToken,
-        };
+        // var res = new JWTResponse()
+        // {
+        //     JWT = jwt,
+        //     RefreshToken = refreshToken.RefreshToken,
+        // };
 
-        return Ok(res);
+        // return Ok(res);
+        
+        SetAuthCookies(jwt, refreshToken.RefreshToken);
+        
+        return Ok(new Message(["Token renewed"]));
     }
 
     /// <summary>
@@ -481,12 +500,25 @@ public class AccountController : ControllerBase
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [HttpPost]
     public async Task<ActionResult> Logout(
-        [FromBody] LogoutInfo logout)
+        // [FromBody] LogoutInfo logout
+        )
     {
         // delete the refresh token - so user is kicked out after jwt expiration
         // We do not invalidate the jwt on serverside - that would require pipeline modification and checking against db on every request
-        // so client can actually continue to use the jwt until it expires (keep the jwt expiration time short ~1 min)
+        // so client can actually continue to use the jwt until it expires
 
+        var refreshToken = Request.Cookies["refreshToken"];
+        if (refreshToken == null)
+        {
+            return BadRequest(
+                new RestApiErrorResponse()
+                {
+                    Status = HttpStatusCode.BadRequest,
+                    Error = "No refresh token provided"
+                }
+            );
+        }
+        
         var userIdStr = _userManager.GetUserId(User);
         if (userIdStr == null)
         {
@@ -518,22 +550,23 @@ public class AccountController : ControllerBase
             );
         }
 
-        await _context.Entry(appUser)
-            .Collection(u => u.RefreshTokens!)
-            .Query()
+        var matchingTokens = await _context.RefreshTokens
             .Where(x =>
-                (x.RefreshToken == logout.RefreshToken) ||
-                (x.PreviousRefreshToken == logout.RefreshToken)
-            )
+                x.UserId == appUser.Id &&
+                (x.RefreshToken == refreshToken ||
+                 x.PreviousRefreshToken == refreshToken)
+                )
             .ToListAsync();
 
-        foreach (var appRefreshToken in appUser.RefreshTokens!)
+        foreach (var appRefreshToken in matchingTokens)
         {
             _context.RefreshTokens.Remove(appRefreshToken);
         }
 
         var deleteCount = await _context.SaveChangesAsync();
 
+        ClearAuthCookies();
+        
         return Ok(new { TokenDeleteCount = deleteCount });
     }
     
@@ -605,5 +638,53 @@ public class AccountController : ControllerBase
             : _configuration.GetValue<int>(settingsKey);
 
         return DateTime.UtcNow.AddSeconds(expiresInSeconds ?? 60);
+    }
+    
+    private void SetAuthCookies(string jwt, string refreshToken)
+    {
+        Response.Cookies.Append("accessToken", jwt, new CookieOptions
+        {
+            HttpOnly = true,
+            Secure = true,
+            SameSite = SameSiteMode.Lax,
+            Path = "/",
+            Expires = DateTimeOffset.UtcNow.AddMinutes(15)
+        });
+
+        Response.Cookies.Append("refreshToken", refreshToken, new CookieOptions
+        {
+            HttpOnly = true,
+            Secure = true,
+            SameSite = SameSiteMode.Lax,
+            Path = "/api/v1.0/Account/RenewRefreshToken",
+            Expires = DateTimeOffset.UtcNow.AddDays(7)
+        });
+        
+        Response.Cookies.Append("refreshToken", refreshToken, new CookieOptions
+        {
+            HttpOnly = true,
+            Secure = true,
+            SameSite = SameSiteMode.Lax,
+            Path = "/api/v1.0/Account/Logout",
+            Expires = DateTimeOffset.UtcNow.AddDays(7)
+        });
+    }
+    
+    private void ClearAuthCookies()
+    {
+        Response.Cookies.Delete("accessToken", new CookieOptions
+        {
+            Path = "/"
+        });
+
+        Response.Cookies.Delete("refreshToken", new CookieOptions
+        {
+            Path = "/api/v1.0/Account/RenewRefreshToken"
+        });
+        
+        Response.Cookies.Delete("refreshToken", new CookieOptions
+        {
+            Path = "/api/v1.0/Account/Logout"
+        });
     }
 }
