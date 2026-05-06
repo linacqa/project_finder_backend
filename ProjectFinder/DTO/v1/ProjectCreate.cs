@@ -15,7 +15,7 @@ public class ProjectCreate
     public string Description { get; set; } = default!;
     [MaxLength(128)]
     public string? Client { get; set; } = default!;
-    [MaxLength(128)]
+    [MaxLength(256)]
     public string? ExternalSupervisor { get; set; } = default!;
     [Required]
     [Range(1, 10)]

@@ -358,7 +358,6 @@ public class AccountController : ControllerBase
     /// <summary>
     /// Renew JWT using refresh token
     /// </summary>
-    /// <param name="tokenRefreshInfo">Data for renewal</param>
     /// <param name="jwtExpiresInSeconds">Optional custom expiration for jwt</param>
     /// <param name="refreshTokenExpiresInSeconds">Optional custom expiration for refresh token</param>
     /// <returns></returns>
@@ -492,7 +491,6 @@ public class AccountController : ControllerBase
     /// <summary>
     /// Logout
     /// </summary>
-    /// <param name="logout">Logout info</param>
     /// <returns></returns>
     [Produces("application/json")]
     [Consumes("application/json")]
@@ -628,6 +626,205 @@ public class AccountController : ControllerBase
         };
 
         return Ok(userInfo);
+    }
+    
+    /// <summary>
+    /// Update account info
+    /// </summary>
+    /// <param name="model">Info to update</param>
+    /// <returns>Current user info</returns>
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [Produces("application/json")]
+    [ProducesResponseType(typeof(DTO.v1.Identity.CurrentUserInfo), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(RestApiErrorResponse), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(RestApiErrorResponse), StatusCodes.Status404NotFound)]
+    [HttpPut]
+    public async Task<ActionResult<DTO.v1.Identity.CurrentUserInfo>> UpdateCurrentUserInfo(
+        [FromBody] DTO.v1.Identity.UpdateAccountInfo model)
+    {
+        var userIdStr = _userManager.GetUserId(User);
+        if (userIdStr == null || !Guid.TryParse(userIdStr, out var userId))
+        {
+            return BadRequest(new RestApiErrorResponse
+            {
+                Status = HttpStatusCode.BadRequest,
+                Error = "Invalid user"
+            });
+        }
+
+        var appUser = await _userManager.FindByIdAsync(userIdStr);
+        if (appUser == null)
+        {
+            return NotFound(new RestApiErrorResponse
+            {
+                Status = HttpStatusCode.NotFound,
+                Error = "User not found"
+            });
+        }
+
+        // if email is to update, check for availability
+        if (!string.IsNullOrWhiteSpace(model.Email) &&
+            !string.Equals(appUser.Email, model.Email, StringComparison.OrdinalIgnoreCase))
+        {
+            var existingUser = await _userManager.FindByEmailAsync(model.Email);
+            if (existingUser != null && existingUser.Id != appUser.Id)
+            {
+                return BadRequest(new RestApiErrorResponse
+                {
+                    Status = HttpStatusCode.BadRequest,
+                    Error = $"Email {model.Email} is already in use"
+                });
+            }
+
+            appUser.Email = model.Email;
+            appUser.UserName = model.Email;
+        }
+
+        if (!string.IsNullOrWhiteSpace(model.FirstName) &&
+            !string.Equals(appUser.FirstName, model.FirstName, StringComparison.Ordinal))
+        {
+            appUser.FirstName = model.FirstName;
+        }
+        if (!string.IsNullOrWhiteSpace(model.LastName) &&
+            !string.Equals(appUser.LastName, model.LastName, StringComparison.Ordinal))
+        {
+            appUser.LastName = model.LastName;
+        }
+        appUser.PhoneNumber = model.PhoneNumber;
+        var isTeacher = await _userManager.IsInRoleAsync(appUser, "teacher");
+        var isStudent = await _userManager.IsInRoleAsync(appUser, "student");
+        if (isTeacher || isStudent)
+        {
+            if (!string.IsNullOrWhiteSpace(model.UniId) &&
+                !string.Equals(appUser.UniId, model.UniId, StringComparison.Ordinal))
+            {
+                appUser.UniId = model.UniId;
+            }
+        }
+
+        if (isStudent)
+        {
+            if (!string.IsNullOrWhiteSpace(model.MatriculationNumber) &&
+                !string.Equals(appUser.MatriculationNumber, model.MatriculationNumber, StringComparison.Ordinal))
+            {
+                appUser.MatriculationNumber = model.MatriculationNumber;
+            }
+
+            if (!string.IsNullOrWhiteSpace(model.Program) &&
+                !string.Equals(appUser.Program, model.Program, StringComparison.Ordinal))
+            {
+                appUser.Program = model.Program;
+            }
+        }
+
+        var result = await _userManager.UpdateAsync(appUser);
+        if (!result.Succeeded)
+        {
+            return BadRequest(new RestApiErrorResponse
+            {
+                Status = HttpStatusCode.BadRequest,
+                Error = result.Errors.First().Description
+            });
+        }
+
+        var currentUserInfo = new DTO.v1.Identity.CurrentUserInfo
+        {
+            Id = appUser.Id,
+            Email = appUser.Email!,
+            PhoneNumber = appUser.PhoneNumber,
+            FirstName = appUser.FirstName,
+            LastName = appUser.LastName,
+            Role = (await _userManager.GetRolesAsync(appUser)).FirstOrDefault() ?? "user",
+            UniId = appUser.UniId,
+            MatriculationNumber = appUser.MatriculationNumber,
+            Program = appUser.Program
+        };
+
+        return Ok(currentUserInfo);
+    }
+    
+    /// <summary>
+    /// Delete account (anonymize data and disable login)
+    /// </summary>
+    /// <returns></returns>
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [Produces("application/json")]
+    [ProducesResponseType(typeof(Message), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(RestApiErrorResponse), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(RestApiErrorResponse), StatusCodes.Status404NotFound)]
+    [HttpDelete]
+    public async Task<ActionResult<Message>> Delete()
+    {
+        var userIdStr = _userManager.GetUserId(User);
+        if (userIdStr == null || !Guid.TryParse(userIdStr, out var userId))
+        {
+            return BadRequest(new RestApiErrorResponse
+            {
+                Status = HttpStatusCode.BadRequest,
+                Error = "Invalid user"
+            });
+        }
+
+        var appUser = await _userManager.FindByIdAsync(userIdStr);
+        if (appUser == null)
+        {
+            return NotFound(new RestApiErrorResponse
+            {
+                Status = HttpStatusCode.NotFound,
+                Error = "User not found"
+            });
+        }
+
+        // Anonymize user data
+        var deletedId = Guid.NewGuid();
+        appUser.FirstName = "[Deleted]";
+        appUser.LastName = "[Deleted]";
+        appUser.PhoneNumber = null;
+        appUser.Email = $"deleted-{deletedId}@deleted.local"; // Unique, not real email
+        appUser.UserName = $"deleted-{deletedId}";
+        appUser.UniId = null;
+        appUser.MatriculationNumber = null;
+        appUser.Program = null;
+        appUser.AzureObjectId = null;
+
+        // Disable login
+        appUser.LockoutEnabled = true;
+        appUser.LockoutEnd = DateTimeOffset.MaxValue;
+
+        // Remove refresh tokens
+        var refreshTokens = await _context.RefreshTokens
+            .Where(t => t.UserId == appUser.Id)
+            .ToListAsync();
+        _context.RefreshTokens.RemoveRange(refreshTokens);
+
+        // Remove roles
+        var roles = await _userManager.GetRolesAsync(appUser);
+        foreach (var role in roles)
+        {
+            await _userManager.RemoveFromRoleAsync(appUser, role);
+        }
+
+        // Remove claims
+        var claims = await _userManager.GetClaimsAsync(appUser);
+        foreach (var claim in claims)
+        {
+            await _userManager.RemoveClaimAsync(appUser, claim);
+        }
+
+        var result = await _userManager.UpdateAsync(appUser);
+        if (!result.Succeeded)
+        {
+            return BadRequest(new RestApiErrorResponse
+            {
+                Status = HttpStatusCode.BadRequest,
+                Error = result.Errors.First().Description
+            });
+        }
+
+        await _context.SaveChangesAsync();
+        ClearAuthCookies();
+
+        return Ok(new Message(["Account anonymized, login disabled"]));
     }
 
     private DateTime GetExpirationDateTime(int? expiresInSeconds, string settingsKey)

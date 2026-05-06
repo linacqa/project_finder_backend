@@ -128,6 +128,7 @@ builder.Services.AddScoped<IEmailService, SmtpEmailService>();
 //     {
 //         policy.AllowAnyHeader();
 //         policy.AllowAnyMethod();
+//         policy.AllowCredentials();
 //         policy.WithOrigins("http://localhost:3000", "https://localhost:3000");
 //     });
 // });

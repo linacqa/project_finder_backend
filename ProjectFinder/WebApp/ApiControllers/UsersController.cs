@@ -41,6 +41,7 @@ namespace WebApp.ApiControllers
         public async Task<ActionResult<IEnumerable<DTO.v1.Identity.UserInfo>>> GetUsers()
         {
             var appUsers = await _context.Users
+                .Where(u => u.LockoutEnd == null || u.LockoutEnd <= DateTime.UtcNow) // exclude locked out users
                 .Include(u => u.UserRoles)
                 .ThenInclude(ur => ur.Role)
                 .ToListAsync();
@@ -71,6 +72,8 @@ namespace WebApp.ApiControllers
                 .Where(u => u.UserRoles.Any(ur => ur.Role.Name.Equals("teacher") || ur.Role.Name.Equals("admin")))
                 .ToListAsync();
             
+            var currentUserRole = User.GetUserRoles().FirstOrDefault();
+            
             return Ok(appUsers.Select(u => new SupervisorInfo()
             {
                 Id = u.Id,
@@ -78,7 +81,7 @@ namespace WebApp.ApiControllers
                 FirstName = u.FirstName,
                 LastName = u.LastName,
                 PhoneNumber = u.PhoneNumber,
-                UniId = u.UniId
+                UniId = currentUserRole is null or "user" ? null : u.UniId
             }));
         }
 
@@ -96,6 +99,8 @@ namespace WebApp.ApiControllers
                 .Where(u => u.UserRoles.Any(ur => ur.Role.Name.Equals("student")))
                 .ToListAsync();
             
+            var currentUserRole = User.GetUserRoles().FirstOrDefault();
+            
             return Ok(appUsers.Select(u => new StudentInfo()
             {
                 Id = u.Id,
@@ -103,8 +108,8 @@ namespace WebApp.ApiControllers
                 FirstName = u.FirstName,
                 LastName = u.LastName,
                 PhoneNumber = u.PhoneNumber,
-                UniId = u.UniId,
-                MatriculationNumber = u.MatriculationNumber,
+                UniId = currentUserRole is null or "user" ? null : u.UniId,
+                MatriculationNumber = currentUserRole is null or "user" or "student" ? null : u.MatriculationNumber,
                 Program = u.Program
             }));
         }
@@ -130,6 +135,9 @@ namespace WebApp.ApiControllers
                 return NotFound();
             }
 
+            var currentUserId = User.GetUserId();
+            var currentUserRole = User.GetUserRoles().FirstOrDefault();
+
             return Ok(new UserInfo()
             {
                 Id = user.Id,
@@ -137,9 +145,9 @@ namespace WebApp.ApiControllers
                 FirstName = user.FirstName,
                 LastName = user.LastName,
                 PhoneNumber = user.PhoneNumber,
-                Role = user.UserRoles.FirstOrDefault().Role.Name,
-                UniId = user.UniId,
-                MatriculationNumber = user.MatriculationNumber,
+                Role = user.UserRoles?.FirstOrDefault()?.Role?.Name ?? "none",
+                UniId = ((currentUserRole is null or "user") && !currentUserId.Equals(user.Id)) ? null : user.UniId,
+                MatriculationNumber = ((currentUserRole is null or "user" or "student") && !currentUserId.Equals(user.Id)) ? null : user.MatriculationNumber,
                 Program = user.Program,
             });
         }
