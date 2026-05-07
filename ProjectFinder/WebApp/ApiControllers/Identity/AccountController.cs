@@ -853,18 +853,18 @@ public class AccountController : ControllerBase
             HttpOnly = true,
             Secure = true,
             SameSite = SameSiteMode.Lax,
-            Path = "/api/v1.0/Account/RenewRefreshToken",
+            Path = "/",
             Expires = DateTimeOffset.UtcNow.AddDays(7)
         });
-        
-        Response.Cookies.Append("refreshToken", refreshToken, new CookieOptions
-        {
-            HttpOnly = true,
-            Secure = true,
-            SameSite = SameSiteMode.Lax,
-            Path = "/api/v1.0/Account/Logout",
-            Expires = DateTimeOffset.UtcNow.AddDays(7)
-        });
+
+        // Response.Cookies.Append("refreshToken", refreshToken, new CookieOptions
+        // {
+        //     HttpOnly = true,
+        //     Secure = true,
+        //     SameSite = SameSiteMode.Lax,
+        //     Path = "/api/v1.0/Account/Logout",
+        //     Expires = DateTimeOffset.UtcNow.AddDays(7)
+        // });
     }
     
     private void ClearAuthCookies()
@@ -876,12 +876,12 @@ public class AccountController : ControllerBase
 
         Response.Cookies.Delete("refreshToken", new CookieOptions
         {
-            Path = "/api/v1.0/Account/RenewRefreshToken"
+            Path = "/"
         });
         
-        Response.Cookies.Delete("refreshToken", new CookieOptions
-        {
-            Path = "/api/v1.0/Account/Logout"
-        });
+        // Response.Cookies.Delete("refreshToken", new CookieOptions
+        // {
+        //     Path = "/api/v1.0/Account/Logout"
+        // });
     }
 }

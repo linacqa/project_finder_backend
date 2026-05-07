@@ -120,6 +120,12 @@ namespace WebApp.ApiControllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutProject(Guid id, DTO.v1.ProjectCreate project)
         {
+            var foundProject = await _bll.ProjectService.FindAsync(id);
+            if (foundProject == null)
+            {
+                return BadRequest("Project with given id not found");
+            }
+            
             try
             {
                 var projectToUpdate = _mapper.Map(project);

@@ -40,20 +40,23 @@ namespace WebApp.ApiControllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<DTO.v1.Identity.UserInfo>>> GetUsers()
         {
+            var now = DateTime.UtcNow;
+            
             var appUsers = await _context.Users
-                .Where(u => u.LockoutEnd == null || u.LockoutEnd <= DateTime.UtcNow) // exclude locked out users
                 .Include(u => u.UserRoles)
                 .ThenInclude(ur => ur.Role)
                 .ToListAsync();
+
+            var activeUsers = appUsers.Where(u => u.LockoutEnd == null || u.LockoutEnd <= now).ToList(); // exclude locked out users
             
-            return Ok(appUsers.Select(u => new UserInfo()
+            return Ok(activeUsers.Select(u => new UserInfo()
             {
                 Id = u.Id,
                 Email = u.Email,
                 FirstName = u.FirstName,
                 LastName = u.LastName,
                 PhoneNumber = u.PhoneNumber,
-                Role = u.UserRoles.FirstOrDefault().Role.Name
+                Role = u.UserRoles?.FirstOrDefault()?.Role?.Name ?? "none"
                 // UniId = u.UniId
             }));
         }

@@ -84,7 +84,8 @@ builder.Services.AddAuthentication(options =>
                 IssuerSigningKey =
                     new SymmetricSecurityKey(
                         Encoding.UTF8.GetBytes(jwt["Key"]!)
-                    )
+                    ),
+                ClockSkew = TimeSpan.Zero // remove delay of token when expires
             };
 
             // FOR HTTP-ONLY COOKIES
@@ -289,7 +290,7 @@ static void WaitDbConnection(AppDbContext ctx, ILogger<IApplicationBuilder> logg
 
 
 // ======================================================================================================
-// needed for unit testing, to change generated top level statement class to public
+// needed for testing, to change generated top level statement class to public
 public partial class Program
 {
 }
